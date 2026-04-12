@@ -1,0 +1,8 @@
+# fonts
+*.woff binary
+*.woff2 binary
+*.ttf binary
+
+# images
+*.png binary
+*.jpg binary

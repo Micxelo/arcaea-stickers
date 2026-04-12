@@ -1,73 +1,63 @@
-Note: This app is no longer maintained as I'm working on an upcoming app. Stay tuned for updates!
----
+# Arcaea Stickers —— 生成你的 Arcaea 贴纸
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-<br />
-<p align="center">
-  <a href="https://github.com/TheOriginalAyaka/sekai-stickers">
-    <img src="https://cdn.discordapp.com/attachments/1045298870533509130/1069241800285499402/Emu_13_st.ayaka.one.png" alt="CSD Bot" width="200" height="200">
-  </a>
+## 🎮 介绍
 
-  <h2 align="center"><b>Project Sekai Stickers</b></h2>
+SEKAI 贴纸工具那么多，难道 Arcaea 就没有吗？
 
-  <p align="center">Help is welcome, got some skill issues so dont judge me
-      <img src="https://cdn.discordapp.com/emojis/999338712255180921.webp?size=28&quality=lossless">
-    <br />
-    <br />
-    <a href="https://github.com/TheOriginalAyaka/sekai-stickers/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/TheOriginalAyaka/sekai-stickers/issues">Request Feature</a>
-  </p>
-</p>
+于是，我开发了 Arcaea Stickers，一个专门为 Arcaea 玩家设计的贴纸生成工具，支持一键生成 Link Play 表情样式的贴纸，满足你在各类社交平台的分享需求！
 
-<!-- ABOUT THE PROJECT -->
+## ✨ 功能
 
-## 🤖》Discord Bot
+- [x] 选取角色和自定义文字
+- [x] 一键下载/复制贴纸
+- [ ] 更好的曲线文字支持
+- [ ] 贴纸制作次数统计
+- [ ] 在社交平台直接分享
 
-### Sekai Stickers is also a discord bot, you can invite it [here](http://link.ayaka.one/stbot)
+## 🚀 快速开始
 
-## <img src="https://cdn.discordapp.com/emojis/859424401186095114.png" width="20px" height="20px"> 》Description
+### 前端要求
 
-[![Readme Card](https://git-stats.ayaka.one/api/pin/?username=TheOriginalAyaka&repo=sekai-stickers&theme=tokyonight&show_owner=true&hide_border=true)](https://github.com/TheOriginalAyaka/sekai-stickers)
+- Node.js 18+
+- npm 11+
 
-## <img src="https://cdn.discordapp.com/emojis/852881450667081728.gif" width="20px" height="20px"> 》Feature
+```bash
+git clone https://github.com/Micxelo/arcaea-stickers.git
+cd arcaea-stickers
+npm install
+npm run dev # 访问 localhost:3000 查看，支持热更新
 
-- [x] Wonderhoy!
-- [x] Download/Copy stickers
-- [x] Global stickers made counter
-- [ ] Social share button
+npm run build # 构建生产版本
+```
 
-## ✨》Credits
+## ❤️ 致谢
 
-- Original stickers from [Reddit](https://www.reddit.com/r/ProjectSekai/comments/x1h4v1/after_an_ungodly_amount_of_time_i_finally_made/)
+- 原始贴纸素材来自 [かなめなか](https://www.pixiv.net/users/28246124) 様
+- [TheOriginalAyaka/sekai-stickers](https://github.com/TheOriginalAyaka/sekai-stickers) 的原始实现
 
-- Cropped images by [Modder4869](https://github.com/Modder4869)
+感谢所有原项目的贡献者，以及社区中所有支持和反馈的玩家！
 
-- Website by [TheOriginalAyaka](https://github.com/TheOriginalAyaka)
+如果你喜欢这个项目，欢迎给我一个 ⭐️，并分享给更多的 Arcaea 玩家！你的支持是我继续开发的动力！
 
-## <img src="https://cdn.discordapp.com/emojis/1028680849195020308.png" width="25px" height="25px"> 》Screenshots
+## 📧 联系
 
-<br />
-<p align="center">
-  <img src="https://raw.githubusercontent.com/TheOriginalAyaka/sekai-stickers/main/public/screenshot.jpg">
-</p>
+对项目有任何建议或想法，欢迎通过 [Issues](https://github.com/Micxelo/arcaea-stickers/issues) 交流！
 
-## 🔐 》License
+也可以通过 [micxelo@outlook.com](mailto:micxelo@outlook.com) 直接联系我。
 
-Distributed under the MIT License. See [`LICENSE`](https://github.com/TheOriginalAyaka/sekai-stickers/blob/main/LICENCE) for more information.
+## 📄 许可证
 
-[contributors-shield]: https://img.shields.io/github/contributors/TheOriginalAyaka/sekai-stickers.svg?style=for-the-badge
-[contributors-url]: https://github.com/TheOriginalAyaka/sekai-stickers/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/TheOriginalAyaka/sekai-stickers.svg?style=for-the-badge
-[forks-url]: https://github.com/TheOriginalAyaka/sekai-stickers/network/members
-[stars-shield]: https://img.shields.io/github/stars/TheOriginalAyaka/sekai-stickers.svg?style=for-the-badge
-[stars-url]: https://github.com/TheOriginalAyaka/sekai-stickers/stargazers
-[issues-shield]: https://img.shields.io/github/issues/TheOriginalAyaka/sekai-stickers.svg?style=for-the-badge
-[issues-url]: https://github.com/TheOriginalAyaka/sekai-stickers/issues
-[license-shield]: https://img.shields.io/github/license/TheOriginalAyaka/sekai-stickers.svg?style=for-the-badge
-[license-url]: https://github.com/TheOriginalAyaka/sekai-stickers/blob/master/LICENSE
+本项目的代码部分采用 MIT 许可证，详见 [LICENSE](LICENSE) 文件。这意味着你可以自由使用、修改和分发代码，但需要保留原作者的版权声明和许可证信息。
+
+贴纸素材（包括但不限于角色图像、背景、游戏内元素等）来自 Lowiro 的音乐游戏 Arcaea，版权归 Lowiro 所有。
+
+本项目为粉丝自制工具，不代表 Lowiro 的立场。
+
+### ⚠️ 提示
+
+- 本项目以**合理使用**的方式提供贴纸生成工具，仅供个人娱乐、粉丝交流等非商业分享使用。
+- 请勿将生成的贴纸用于商业目的（包括但不限于印刷售卖、付费订阅、广告推广等）。
+- 请勿将生成的贴纸用于任何违法、侵权、诽谤、骚扰等不当用途。
+- 如果你喜欢 Arcaea，请支持官方游戏及周边。

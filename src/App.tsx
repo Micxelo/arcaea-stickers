@@ -1,0 +1,456 @@
+import "./App.css";
+import Canvas from "./components/Canvas";
+import { useState, useEffect } from "react";
+import characters from "./characters.json";
+import Slider from "@mui/material/Slider";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Switch from "@mui/material/Switch";
+import IconButton from '@mui/material/IconButton';
+import Picker from "./components/Picker";
+import Info from "./components/Info";
+
+import InfoIcon from '@mui/icons-material/Info';
+import RefreshIcon from '@mui/icons-material/Refresh';
+
+// 定义角色数据的类型
+interface DefaultText {
+  text: string;
+  x: number;
+  y: number;
+  rotate: number;
+  size: number;
+}
+
+interface Character {
+  id: string;
+  name: string;
+  character: string;
+  img: string;
+  color: string;
+  strokeColor: string;
+  defaultText: DefaultText;
+}
+
+// 断言导入的 JSON 符合 Character[] 类型
+const typedCharacters = characters as Character[];
+
+const { ClipboardItem } = window;
+
+const CANVAS_CONFIG = {
+  // 原图片尺寸
+  width: 512,
+  height: 512,
+
+  // 输出贴纸尺寸
+  outputWidth: 296,
+  outputHeight: 256,
+};
+
+const STROKE_CONFIG = {
+  outerWidth: 18,             // 外圈描边宽度
+  innerWidth: 7,              // 内圈描边宽度
+  defaultColor: "#000000",  // 默认内圈描边颜色
+};
+
+const TEXT_CONFIG = {
+  defaultFontFamily: "JingNanBoBoHei",  // 默认字体
+  fallbackFonts: ["SSFangTangTi", "Microsoft YaHei", "sans-serif"], // 字体回退列表
+  curveRadiusFactor: 3.5, // 曲线文字半径调整因子
+  rotateUnit: 10,         // 旋转角度单位
+};
+
+async function loadFont(family: string, url: string): Promise<boolean> {
+  try {
+    // 如果字体未注册，则加载
+    if (!document.fonts.check(`12px ${family}`)) {
+      const font = new FontFace(family, `url(${url})`);
+      await font.load();
+      document.fonts.add(font);
+    }
+    // 等待所有字体加载和解码完成
+    await document.fonts.ready;
+    console.log(`字体 "${family}" 加载成功`);
+    return true;
+  } catch (error) {
+    console.error(`字体 "${family}" 加载失败:`, error);
+    return false;
+  }
+}
+
+function App() {
+  const [infoOpen, setInfoOpen] = useState(false);
+  const handleClickOpen= () => setInfoOpen(true);
+  const handleClose = () => setInfoOpen(false); 
+
+  const [character, setCharacter] = useState(2); // 默认角色（Hikari）
+  const [text, setText] = useState(typedCharacters[character].defaultText.text);
+  const [fontSize, setFontSize] = useState<number>(typedCharacters[character].defaultText.size);
+  const [spaceSize, setSpaceSize] = useState<number>(18);
+  const [rotate, setRotate] = useState<number>(typedCharacters[character].defaultText.rotate);
+  const [position, setPosition] = useState({
+    x: typedCharacters[character].defaultText.x,
+    y: typedCharacters[character].defaultText.y,
+  });
+  const [curve, setCurve] = useState(false);
+
+  // 颜色相关状态
+  const [textColor, setTextColor] = useState<string>(typedCharacters[character].color);
+  const [strokeColor, setStrokeColor] = useState<string>(typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor);
+
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  const img = new Image();
+
+  // 组件挂载时加载字体
+  useEffect(() => {
+    loadFont("JingNanBoBoHei", "/fonts/JingNanBoBoHei.ttf").then(() => {
+      setFontLoaded(true);
+    });
+  }, []);
+
+  // 切换角色时重置状态
+  useEffect(() => {
+    const curr = typedCharacters[character];
+    setText(curr.defaultText.text);
+    setPosition({
+      x: curr.defaultText.x,
+      y: curr.defaultText.y,
+    });
+    setRotate(curr.defaultText.rotate);
+    setFontSize(curr.defaultText.size);
+    setTextColor(curr.color);
+    setStrokeColor(curr.strokeColor || STROKE_CONFIG.defaultColor);
+    setSpaceSize(18);
+    setImgLoaded(false);
+  }, [character]);
+
+  img.src = "/img/" + typedCharacters[character].img;
+  img.onload = () => {
+    setImgLoaded(true);
+  };
+
+  let angle = (Math.PI * text.length) / 7;
+
+  const draw = async (ctx: CanvasRenderingContext2D) => {
+    ctx.canvas.width = CANVAS_CONFIG.outputWidth;
+    ctx.canvas.height = CANVAS_CONFIG.outputHeight;
+
+    if (!imgLoaded || !fontLoaded)
+      return; 
+
+    try {
+      await document.fonts.load(`${fontSize}px JingNanBoBoHei`, text);
+    } catch (error) {
+      console.warn('字体加载失败，继续使用默认字体绘制', error);
+    }
+
+    var hRatio = ctx.canvas.width / img.width;
+    var vRatio = ctx.canvas.height / img.height;
+    var ratio = Math.min(hRatio, vRatio);
+    var centerShift_x = (ctx.canvas.width - img.width * ratio) / 2;
+    var centerShift_y = (ctx.canvas.height - img.height * ratio) / 2;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.drawImage(
+      img,
+      0,
+      0,
+      img.width,
+      img.height,
+      centerShift_x,
+      centerShift_y,
+      img.width * ratio,
+      img.height * ratio
+    );
+
+    ctx.font = `${fontSize}px 'JingNanBoBoHei', 'SSFangTangTi', 'Microsoft YaHei', sans-serif`;
+    ctx.lineWidth = 9;
+    ctx.save();
+
+    ctx.translate(position.x, position.y);
+    ctx.rotate(rotate / 10);
+    ctx.textAlign = "center";
+    
+    // 外圈描边及文本颜色
+    ctx.strokeStyle = "white";
+    ctx.fillStyle = textColor; // 应用状态颜色
+
+    var lines = text.split("\n");
+    if (curve) {
+      for (let line of lines) {
+        for (let i = 0; i < line.length; i++) {
+          ctx.rotate(angle / line.length / 2.5);
+          ctx.save();
+          ctx.translate(0, -1 * fontSize * 3.5);
+          ctx.strokeText(line[i], 0, 0);
+          ctx.fillText(line[i], 0, 0);
+          ctx.restore();
+        }
+      }
+    } else {
+      for (var i = 0, k = 0; i < lines.length; i++) {
+
+        // 外圈描边
+        ctx.lineJoin = "round";
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 18;
+        ctx.strokeStyle = "white";
+        ctx.strokeText(lines[i], 0, k);
+
+        // 内圈描边
+        ctx.lineJoin = "miter";
+        ctx.lineCap = 'butt';
+        ctx.lineWidth = 7;
+        ctx.strokeStyle = strokeColor; // 应用状态颜色
+        ctx.strokeText(lines[i], 0, k);
+
+        // 填充
+        ctx.fillStyle = textColor; // 应用状态颜色
+        ctx.fillText(lines[i], 0, k);
+        
+        k += spaceSize;
+      }
+      ctx.restore();
+    }
+  };
+
+  const download = async () => {
+    const canvas = document.getElementsByTagName("canvas")[0];
+    const link = document.createElement("a");
+    link.download = `${typedCharacters[character].name}_st.ayaka.one.png`;
+    link.href = canvas.toDataURL();
+    link.click();
+  };
+
+  function b64toBlob(b64Data: string, contentType: string | null = null, sliceSize: number | null = null) {
+    contentType = contentType || "image/png";
+    sliceSize = sliceSize || 512;
+    let byteCharacters = atob(b64Data);
+    let byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      let slice = byteCharacters.slice(offset, offset + sliceSize);
+      let byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      var byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, { type: contentType });
+  }
+
+  const copy = async () => {
+    const canvas = document.getElementsByTagName("canvas")[0];
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        "image/png": b64toBlob(canvas.toDataURL().split(",")[1]),
+      }),
+    ]);
+  };
+
+  return (
+    <div className="App">
+      <div className="app-wrapper">
+        <div className="app-header">
+          <div className="header-title">
+            <h1>Arcaea 贴纸生成器</h1>
+          </div>
+          <div className="header-buttons">
+            <IconButton color="secondary" onClick={handleClickOpen}>
+              <InfoIcon />
+            </IconButton>
+          </div>
+        </div>
+
+        <div className="container">
+          <div className="canvas-area">
+            <div className="vertical">
+              <div style={{ position: "relative", display: "inline-block" }}>
+                <div className="canvas">
+                  <Canvas draw={draw} />
+                </div>
+                <div style={{ position: "absolute", bottom: -45, right: -45, zIndex: 1 }}>
+                  <Picker setCharacter={setCharacter} />
+                </div>
+              </div>
+
+              <Slider
+                value={curve ? 256 - position.y + fontSize * 3 : 256 - position.y}
+                onChange={(e, v) =>
+                  setPosition({
+                    ...position,
+                    y: curve ? 256 + fontSize * 3 - (v as number) : 256 - (v as number),
+                  })
+                }
+                min={0}
+                max={CANVAS_CONFIG.outputHeight}
+                step={1}
+                orientation="vertical"
+                track={false}
+                color="secondary"
+              />
+            </div>
+
+            <div className="horizontal">
+              <Slider
+                className="slider-horizontal"
+                value={position.x}
+                onChange={(e, v) => setPosition({ ...position, x: v as number })}
+                min={0}
+                max={CANVAS_CONFIG.outputWidth}
+                step={1}
+                track={false}
+                color="secondary"
+              />
+            </div>
+
+            <div className="text">
+              <TextField
+                label="文字内容"
+                size="small"
+                color="secondary"
+                value={text}
+                multiline={true}
+                fullWidth
+                onChange={(e) => setText(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="settings-area">
+            <div className="settings">
+              <div>
+                <label>
+                  <span style={{ whiteSpace: 'nowrap' }}>旋转角度</span>
+                </label>
+                <Slider
+                  value={rotate}
+                  onChange={(e, v) => setRotate(v as number)}
+                  valueLabelDisplay="auto"
+                  min={-10}
+                  max={10}
+                  step={0.2}
+                  track={false}
+                  color="secondary"
+                />
+                <IconButton
+                  size="small"
+                  color="secondary"
+                  onClick={() => setRotate(typedCharacters[character].defaultText.rotate)}
+                  title="重置旋转角度"
+                >
+                  <RefreshIcon fontSize="small" />
+                </IconButton>
+              </div>
+              <div>
+                <label>
+                  <span style={{ whiteSpace: 'nowrap' }}>字体大小</span>
+                </label>
+                <Slider
+                  value={fontSize}
+                  onChange={(e, v) => setFontSize(v as number)}
+                  valueLabelDisplay="auto"
+                  min={10}
+                  max={100}
+                  step={1}
+                  track={false}
+                  color="secondary"
+                />
+                <IconButton
+                  size="small"
+                  color="secondary"
+                  onClick={() => setFontSize(typedCharacters[character].defaultText.size)}
+                  title="重置字体大小"
+                >
+                  <RefreshIcon fontSize="small" />
+                </IconButton>
+              </div>
+              <div>
+                <label>
+                  <span style={{ whiteSpace: 'nowrap' }}>行间距</span>
+                </label>
+                <Slider
+                  value={spaceSize}
+                  onChange={(e, v) => setSpaceSize(v as number)}
+                  valueLabelDisplay="auto"
+                  min={18}
+                  max={100}
+                  step={1}
+                  track={false}
+                  color="secondary"
+                />
+                <IconButton
+                  size="small"
+                  color="secondary"
+                  onClick={() => setSpaceSize(18)}
+                  title="重置行间距"
+                >
+                  <RefreshIcon fontSize="small" />
+                </IconButton>
+              </div>
+              <div className="switch-align-right">
+                <label>弧形文字</label>
+                <Switch
+                  checked={curve}
+                  onChange={(e) => setCurve(e.target.checked)}
+                  color="secondary"
+                />
+              </div>
+              
+              {/* 颜色选取器 */}
+              <div style={{ justifyContent: 'space-between', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <label style={{ minWidth: 'auto', whiteSpace: 'nowrap' }}>文字颜色</label>
+                  <input
+                    type="color"
+                    className="color-picker-input"
+                    value={textColor}
+                    onChange={(e) => setTextColor(e.target.value)}
+                  />
+                  <IconButton
+                    size="small"
+                    color="secondary"
+                    onClick={() => setTextColor(typedCharacters[character].color)}
+                    title="重置为角色默认颜色"
+                  >
+                    <RefreshIcon fontSize="small" />
+                  </IconButton>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <label style={{ minWidth: 'auto', whiteSpace: 'nowrap' }}>描边颜色</label>
+                  <input
+                    type="color"
+                    className="color-picker-input"
+                    value={strokeColor}
+                    onChange={(e) => setStrokeColor(e.target.value)}
+                  />
+                  <IconButton
+                    size="small"
+                    color="secondary"
+                    onClick={() => setStrokeColor(typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor)}
+                    title="重置为角色默认描边颜色"
+                  >
+                    <RefreshIcon fontSize="small" />
+                  </IconButton>
+                </div>
+              </div>
+            </div>
+
+            <div className="buttons">
+              <Button color="secondary" variant="contained" onClick={copy}>
+                复制
+              </Button>
+              <Button color="secondary" variant="contained" onClick={download}>
+                下载
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;

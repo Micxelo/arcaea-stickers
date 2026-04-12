@@ -1,7 +1,36 @@
+:root {
+  --font-family-main: "JingNanBoBoHei", "SSFangTangTi", "Microsoft YaHei", sans-serif;
+}
+
+/* 全局样式 */
 .App {
   text-align: center;
 }
 
+/* 页面包裹器 */
+.app-wrapper {
+  width: 100%;
+  margin: 0 auto;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 1rem;
+  min-height: 2rem;
+}
+
+/* 标题区域 */
+.app-header {
+  display: flex;
+  padding: 1rem 1rem 0.5rem 1rem;
+  gap: 1rem;
+}
+
+/* 主容器 */
 .container {
   padding: 2rem;
   align-items: center;
@@ -10,6 +39,12 @@
   flex-direction: column;
 }
 
+/* 设置区域容器 */
+.settings-area {
+  width: 100%;
+}
+
+/* 画布 */
 .canvas {
   height: 256px;
   width: 296px;
@@ -21,35 +56,60 @@
   justify-content: center;
   align-items: center;
   height: 256px;
+  gap: 10px;
 }
 
 .horizontal {
   width: 296px;
-  /* margin-left: -30px; */
-
 }
-
 .slider-horizontal {
-  margin-left: -30px;
+  margin-top: 10px;
+  margin-left: 0;
 }
 
+/* 设置区域 */
 .settings {
   color: white;
-  font-family: "YurukaStd";
+  font-family: var(--font-family-main);
   margin: 1.5rem 0 1.5rem 0;
 }
 
+/* 每个设置项 */
 .settings > div {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   margin-bottom: 1rem;
+  width: 100%;
 }
 
+/* 标签和开关两端对齐 */
+.settings .switch-align-right {
+  justify-content: space-between;
+}
+
+.settings > div > label {
+  min-width: 4.5rem;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.settings > div .MuiSlider-root {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings > div .MuiSwitch-root {
+  flex: 0 0 auto;
+}
+
+/* 文本框 */
 .text {
+  margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
+/* 角色选择器 */
 .picker {
   display: flex;
   align-items: center;
@@ -60,20 +120,18 @@
 .modal > .MuiPopover-paper {
   overflow: hidden;
 }
-
 .picker-search {
   margin: 0.5rem;
 }
-
 .image-grid-wrapper {
   overflow: auto;
 }
-
 .image-grid {
   margin: 0.5rem;
   border-radius: 0.25rem;
 }
 
+/* 按钮 */
 .buttons {
   display: flex;
   align-items: center;
@@ -82,113 +140,94 @@
   margin-top: 1rem;
 }
 
-.footer {
-  margin-top: 2rem;
-  font-family: "YurukaStd";
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-/* .footer > a {
-  color: rgb(199, 199, 199);
-  text-decoration: none;
-  margin-bottom: 0.5rem;
-}
-
-.footer > a:hover {
-  color: rgb(255, 255, 255);
-} */
-
-::-webkit-scrollbar {
-  width: 0.5rem;
-  height: 0.5rem;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: white;
-  border-radius: 1rem;
-  min-height: 2rem;
-}
-
-.counter {
-  left: 0;
-  top: 0;
-  text-align: left;
-  color: white;
-  font-weight: bold;
-  font-family: YurukaStd;
-}
-
-/* banner */
-
-.bannercontainer {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  overflow: hidden;
-  background-color: #702464;
-  padding: 10px 15px;
-  font-family: "YurukaStd";
-}
-
-.bannermessage {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.bannermessage p {
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.bannermessage strong {
-  font-weight: bold;
-}
-
-.bannerbutton {
-  flex: none;
-  border-radius: 9999px;
-  background-color: #c56d87;
-  padding: 4px 14px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #FFFFFF;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  text-decoration: none;
-}
-
-.bannerbutton:hover {
-  background-color: #c55778;
-}
-
-.bannerbutton span {
-  margin-left: 6px;
-}
-
-.bannerdismiss {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.bannerdismiss button {
-  margin: -10px;
-  padding: 10px;
-  appearance: none;
-  border: none;
-  background-color: transparent;
-  color: inherit;
-  font: inherit;
+/* 颜色选择器美化 */
+.color-picker-input {
   cursor: pointer;
-  outline: none;
+  width: 2.2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  background-color: transparent;
+}
+.color-picker-input::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+.color-picker-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
 }
 
-.bannerdismiss button svg {
-  height: 20px;
-  width: 20px;
-  color: white;
+/* 竖屏模式 */
+@media (orientation: portrait) {
+  .app-header {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1.5rem 1rem 0.5rem 1rem;
+  }
+  .header-title h1 {
+    margin: 0 0 0.5rem 0;
+    font-family: var(--font-family-main);
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: white;
+  }
+  .header-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+}
+
+/* 横屏模式 */
+@media (orientation: landscape) {
+  .app-wrapper {
+    max-width: 820px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .app-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+  }
+  .header-title {
+    flex: 1;
+    text-align: left;
+  }
+  .header-title h1 {
+    margin: 0;
+    font-family: var(--font-family-main);
+    font-size: 1.6rem;
+    color: white;
+  }
+  .header-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .container {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+  }
+
+  .canvas-area {
+    flex-shrink: 0;
+  }
+
+  .settings-area {
+    flex-grow: 1;
+    max-width: none;
+    width: auto;
+  }
+
+  .settings {
+    margin: 0.5rem 0 1rem 0;
+  }
 }

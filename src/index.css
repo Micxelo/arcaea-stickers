@@ -13,3 +13,9 @@ body {
   font-family: 'SSFangTangTi';
   src: local('SSFangTangTi'), url(./fonts/ShangShouFangTangTi.woff2) format('woff2');
 }
+
+@font-face {
+  font-family: 'JingNanBoBoHei';
+  src: local('JingNanBoBoHei'), url(./fonts/JingNanBoBoHei.ttf) format('truetype');
+  font-display: block;
+}
