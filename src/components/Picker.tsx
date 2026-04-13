@@ -41,7 +41,7 @@ export default function Picker({ setCharacter }: PickerProps) {
   const handleClose = () => setOpen(false);
 
   const filteredItems = useMemo(() => {
-    const s = search.toLowerCase();
+    const s = search.toLowerCase().trim();
     return (characters as Character[]).map((c, index) => {
       const match =
         s === c.id ||
@@ -92,7 +92,7 @@ export default function Picker({ setCharacter }: PickerProps) {
         maxWidth={false}
         PaperProps={{
           sx: {
-            width: 'auto',
+            width: '100%',
             minWidth: 360,
             maxWidth: 500,
             margin: 16,

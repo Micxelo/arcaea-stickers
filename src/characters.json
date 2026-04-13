@@ -2,7 +2,7 @@
     {
         "id":"1001",
         "name": "Ayu",
-        "character": "Ayu",
+        "character": "彩梦",
         "img": "ayu.png",
         "color": "#fbde5d",
         "strokeColor": "#dc8d22",
@@ -17,7 +17,7 @@
     {
         "id":"1002",
         "name": "Eto",
-        "character": "Eto",
+        "character": "爱托",
         "img": "eto.png",
         "color": "#9fdbf0",
         "strokeColor": "#3398c3",
@@ -32,12 +32,149 @@
     {
         "id":"1003",
         "name": "Hikari",
-        "character": "Hikari",
+        "character": "光",
         "img": "hikari.png",
         "color": "#fce8b6",
         "strokeColor": "#ea8d1c",
         "defaultText": {
             "text": "嗨！",
+            "x": 148,
+            "y": 58,
+            "rotate": -2,
+            "size": 40
+        }
+    },
+    {
+        "id":"1004",
+        "name": "Ilith",
+        "character": "依莉丝",
+        "img": "ilith.png",
+        "color": "#ef8294",
+        "strokeColor": "#c01d36",
+        "defaultText": {
+            "text": "表现不错",
+            "x": 148,
+            "y": 58,
+            "rotate": -2,
+            "size": 40
+        }
+    },
+    {
+        "id": "1005",
+        "name": "Kou",
+        "character": "红",
+        "img": "kou.png",
+        "color": "#fcd5d5",
+        "strokeColor": "#ea5f90",
+        "defaultText": {
+            "text": "很棒喔！",
+            "x": 148,
+            "y": 58,
+            "rotate": -2,
+            "size": 40
+        }
+    },
+    {
+        "id": "1006",
+        "name": "Lagrange",
+        "character": "拉格兰",
+        "img": "lagrange.png",
+        "color": "#bfd6fa",
+        "strokeColor": "#6292de",
+        "defaultText": {
+            "text": "马上回来",
+            "x": 148,
+            "y": 58,
+            "rotate": -2,
+            "size": 40
+        }
+    },
+    {
+        "id": "1007",
+        "name": "Luna",
+        "character": "露娜",
+        "img": "luna.png",
+        "color": "#bf9edc",
+        "strokeColor": "#7d4aa6",
+        "defaultText": {
+            "text": "哼哼！",
+            "x": 148,
+            "y": 58,
+            "rotate": -2,
+            "size": 40
+        }
+    },
+    {
+        "id": "1008",
+        "name": "Maya",
+        "character": "摩耶",
+        "img": "maya.png",
+        "color": "",
+        "strokeColor": "",
+        "defaultText": {
+            "text": "",
+            "x": 148,
+            "y": 58,
+            "rotate": -2,
+            "size": 40
+        }
+    },
+    {
+        "id": "1009",
+        "name": "Nami",
+        "character": "奈美",
+        "img": "nami.png",
+        "color": "#f6c2cb",
+        "strokeColor": "#ef4763",
+        "defaultText": {
+            "text": "欸——",
+            "x": 148,
+            "y": 58,
+            "rotate": -2,
+            "size": 40
+        }
+    },
+    {
+        "id": "1010",
+        "name": "Shirahime",
+        "character": "白姬",
+        "img": "shirahime.png",
+        "color": "#c6d4fe",
+        "strokeColor": "#6d79e6",
+        "extraColor": "#f6c2cb",
+        "extraStrokeColor": "#ef4763",
+        "defaultText": {
+            "text": "喜欢……",
+            "x": 148,
+            "y": 58,
+            "rotate": -2,
+            "size": 40
+        }
+    },
+    {
+        "id": "1011",
+        "name": "Tairitsu",
+        "character": "对立",
+        "img": "tairitsu.png",
+        "color": "#8be8d5",
+        "strokeColor": "#43a18d",
+        "defaultText": {
+            "text": "最后一首",
+            "x": 148,
+            "y": 58,
+            "rotate": -2,
+            "size": 40
+        }
+    },
+    {
+        "id": "1012",
+        "name": "Vita",
+        "character": "维塔",
+        "img": "vita.png",
+        "color": "#ef8294",
+        "strokeColor": "#bf1a33",
+        "defaultText": {
+            "text": "好！",
             "x": 148,
             "y": 58,
             "rotate": -2,
