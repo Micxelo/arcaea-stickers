@@ -96,9 +96,14 @@ function App() {
   });
   const [curve, setCurve] = useState(false);
 
+  // 自定义背景颜色
+  const [bgColorEnabled, setBgColorEnabled] = useState(false); // 使用透明背景
+  const [bgColor, setBgColor] = useState<string>("#ffffff");
+
   // 默认文字颜色
   const [textColor, setTextColor] = useState<string>(typedCharacters[character].color);
   const [strokeColor, setStrokeColor] = useState<string>(typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor);
+  
   // 右侧文字颜色
   const [extraColorEnabled, setExtraColorEnabled] = useState<boolean>(false);
   const [extraColor, setExtraColor] = useState<string>(typedCharacters[character].extraColor || typedCharacters[character].color);
@@ -170,6 +175,13 @@ function App() {
     var centerShift_x = (ctx.canvas.width - img.width * ratio) / 2;
     var centerShift_y = (ctx.canvas.height - img.height * ratio) / 2;
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    // 绘制背景颜色
+    if (bgColorEnabled) {
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+
     ctx.drawImage(
       img,
       0,
@@ -387,6 +399,37 @@ function App() {
                 onChange={(e) => setText(e.target.value)}
               />
             </div>
+
+            {/* 背景颜色开关与选择器 */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <label>背景颜色</label>
+                <Switch
+                  checked={bgColorEnabled}
+                  onChange={(e) => setBgColorEnabled(e.target.checked)}
+                  color="secondary"
+                />
+              </div>
+              {bgColorEnabled && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <input
+                    type="color"
+                    className="color-picker-input"
+                    value={bgColor}
+                    onChange={(e) => setBgColor(e.target.value)}
+                  />
+                  <IconButton
+                    size="small"
+                    color="secondary"
+                    onClick={() => setBgColor("#ffffff")}
+                    title="重置背景色为白色"
+                  >
+                    <RefreshIcon fontSize="small" />
+                  </IconButton>
+                </div>
+              )}
+            </div>
+            
           </div>
 
           <div className="settings-area">
