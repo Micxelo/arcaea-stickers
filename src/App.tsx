@@ -29,6 +29,8 @@ interface Character {
   img: string;
   color: string;
   strokeColor: string;
+  extraColor?: string;        // 存在时视为右侧文字颜色
+  extraStrokeColor?: string;  // 存在时视为右侧文字描边颜色
   defaultText: DefaultText;
 }
 
@@ -86,7 +88,7 @@ function App() {
   const [character, setCharacter] = useState(2); // 默认角色（Hikari）
   const [text, setText] = useState(typedCharacters[character].defaultText.text);
   const [fontSize, setFontSize] = useState<number>(typedCharacters[character].defaultText.size);
-  const [spaceSize, setSpaceSize] = useState<number>(18);
+  const [spaceSize, setSpaceSize] = useState<number>(50);
   const [rotate, setRotate] = useState<number>(typedCharacters[character].defaultText.rotate);
   const [position, setPosition] = useState({
     x: typedCharacters[character].defaultText.x,
@@ -94,9 +96,13 @@ function App() {
   });
   const [curve, setCurve] = useState(false);
 
-  // 颜色相关状态
+  // 默认文字颜色
   const [textColor, setTextColor] = useState<string>(typedCharacters[character].color);
   const [strokeColor, setStrokeColor] = useState<string>(typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor);
+  // 右侧文字颜色
+  const [extraColorEnabled, setExtraColorEnabled] = useState<boolean>(false);
+  const [extraColor, setExtraColor] = useState<string>(typedCharacters[character].extraColor || typedCharacters[character].color);
+  const [extraStrokeColor, setExtraStrokeColor] = useState<string>(typedCharacters[character].extraStrokeColor || (typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor));
 
   const [imgLoaded, setImgLoaded] = useState(false);
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -122,7 +128,19 @@ function App() {
     setFontSize(curr.defaultText.size);
     setTextColor(curr.color);
     setStrokeColor(curr.strokeColor || STROKE_CONFIG.defaultColor);
-    setSpaceSize(18);
+
+    // 处理附加颜色
+    if (curr.extraColor && curr.extraStrokeColor) {
+      setExtraColorEnabled(true);
+      setExtraColor(curr.extraColor);
+      setExtraStrokeColor(curr.extraStrokeColor);
+    } else {
+      setExtraColorEnabled(false);
+      setExtraColor(curr.color);
+      setExtraStrokeColor(curr.strokeColor || STROKE_CONFIG.defaultColor);
+    }
+
+    setSpaceSize(50);
     setImgLoaded(false);
   }, [character]);
 
@@ -189,27 +207,80 @@ function App() {
         }
       }
     } else {
+      // 逐行绘制
       for (var i = 0, k = 0; i < lines.length; i++) {
-
-        // 外圈描边
-        ctx.lineJoin = "round";
-        ctx.lineCap = 'round';
-        ctx.lineWidth = 18;
-        ctx.strokeStyle = "white";
-        ctx.strokeText(lines[i], 0, k);
-
-        // 内圈描边
-        ctx.lineJoin = "miter";
-        ctx.lineCap = 'butt';
-        ctx.lineWidth = 7;
-        ctx.strokeStyle = strokeColor; // 应用状态颜色
-        ctx.strokeText(lines[i], 0, k);
-
-        // 填充
-        ctx.fillStyle = textColor; // 应用状态颜色
-        ctx.fillText(lines[i], 0, k);
+        const line = lines[i];
+        // 判断是否启用分色绘制且颜色值有效
+        const useExtra = extraColorEnabled && extraColor && extraStrokeColor;
         
-        k += spaceSize;
+        if (useExtra && line.length > 1) { // 启用分色绘制
+          // 将字符串一分为二（向上取整）
+          const mid = Math.ceil(line.length / 2);
+          const leftText = line.substring(0, mid);
+          const rightText = line.substring(mid);
+
+          // 获取整段文字的原始宽度
+          const totalWidth = ctx.measureText(line).width;
+
+          ctx.save();
+
+          // 外圈描边）
+          ctx.lineJoin = "round";
+          ctx.lineCap = "round";
+          ctx.lineWidth = 18;
+          ctx.strokeStyle = "white";
+          
+          ctx.textAlign = "left";
+          ctx.strokeText(leftText, -totalWidth / 2, k);
+          ctx.textAlign = "right";
+          ctx.strokeText(rightText, totalWidth / 2, k);
+
+          // 内圈描边
+          ctx.lineJoin = "miter";
+          ctx.lineCap = "butt";
+          ctx.lineWidth = 7;
+          
+          ctx.textAlign = "left";
+          ctx.strokeStyle = strokeColor; // 左侧内圈色
+          ctx.strokeText(leftText, -totalWidth / 2, k);
+          
+          ctx.textAlign = "right";
+          ctx.strokeStyle = extraStrokeColor; // 右侧内圈色
+          ctx.strokeText(rightText, totalWidth / 2, k);
+
+          // 文字填充
+          ctx.textAlign = "left";
+          ctx.fillStyle = textColor; // 左侧填充色
+          ctx.fillText(leftText, -totalWidth / 2, k);
+          
+          ctx.textAlign = "right";
+          ctx.fillStyle = extraColor; // 右侧填充色
+          ctx.fillText(rightText, totalWidth / 2, k);
+
+          ctx.restore();
+          
+          k += spaceSize;
+        } else {
+          // 外圈描边
+          ctx.lineJoin = "round";
+          ctx.lineCap = 'round';
+          ctx.lineWidth = 18;
+          ctx.strokeStyle = "white";
+          ctx.strokeText(lines[i], 0, k);
+
+          // 内圈描边
+          ctx.lineJoin = "miter";
+          ctx.lineCap = 'butt';
+          ctx.lineWidth = 7;
+          ctx.strokeStyle = strokeColor; // 应用状态颜色
+          ctx.strokeText(lines[i], 0, k);
+
+          // 填充
+          ctx.fillStyle = textColor; // 应用状态颜色
+          ctx.fillText(lines[i], 0, k);
+          
+          k += spaceSize;
+        }
       }
       ctx.restore();
     }
@@ -436,6 +507,71 @@ function App() {
                   </IconButton>
                 </div>
               </div>
+
+              {/* 分色绘制开关 */}
+              <div className="switch-align-right" style={{ marginTop: '0.5rem' }}>
+                <label>分色绘制</label>
+                <Switch
+                  checked={extraColorEnabled}
+                  onChange={(e) => setExtraColorEnabled(e.target.checked)}
+                  color="secondary"
+                />
+              </div>
+
+              {/* 条件渲染的额外颜色选择器 */}
+              {extraColorEnabled && (
+                <div style={{ justifyContent: 'space-between', gap: '1rem', marginTop: '0.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <label style={{ minWidth: 'auto', whiteSpace: 'nowrap' }}>附加颜色</label>
+                    <input
+                      type="color"
+                      className="color-picker-input"
+                      value={extraColor}
+                      onChange={(e) => setExtraColor(e.target.value)}
+                    />
+                    <IconButton
+                      size="small"
+                      color="secondary"
+                      onClick={() => {
+                        const curr = typedCharacters[character];
+                        if (curr.extraColor && curr.extraStrokeColor) {
+                          setExtraColor(curr.extraColor);
+                        } else {
+                          setExtraColor(textColor);
+                        }
+                      }}
+                      title="重置为默认值"
+                    >
+                      <RefreshIcon fontSize="small" />
+                    </IconButton>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <label style={{ minWidth: 'auto', whiteSpace: 'nowrap' }}>附加描边</label>
+                    <input
+                      type="color"
+                      className="color-picker-input"
+                      value={extraStrokeColor}
+                      onChange={(e) => setExtraStrokeColor(e.target.value)}
+                    />
+                    <IconButton
+                      size="small"
+                      color="secondary"
+                      onClick={() => {
+                        const curr = typedCharacters[character];
+                        if (curr.extraColor && curr.extraStrokeColor) {
+                          setExtraStrokeColor(curr.extraStrokeColor);
+                        } else {
+                          setExtraStrokeColor(strokeColor);
+                        }
+                      }}
+                      title="重置为默认值"
+                    >
+                      <RefreshIcon fontSize="small" />
+                    </IconButton>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="buttons">
