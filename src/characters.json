@@ -109,8 +109,10 @@
         "name": "Maya",
         "character": "摩耶",
         "img": "maya.png",
-        "color": "",
-        "strokeColor": "",
+        "color": "#8d848e",
+        "strokeColor": "#462949",
+        "extraColor": "#ef8087",
+        "extraStrokeColor": "#881112",
         "defaultText": {
             "text": "",
             "x": 148,
