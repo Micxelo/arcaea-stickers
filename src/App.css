@@ -1,5 +1,5 @@
 :root {
-  --font-family-main: "JingNanBoBoHei", "SSFangTangTi", "Microsoft YaHei", sans-serif;
+  --font-family-main: "JingNanBoBoHei", "YurukaStd", "Microsoft YaHei", "sans-serif";
 }
 
 /* 全局样式 */
@@ -81,11 +81,6 @@
   gap: 1rem;
   margin-bottom: 1rem;
   width: 100%;
-}
-
-/* 标签和开关两端对齐 */
-.settings .switch-align-right {
-  justify-content: space-between;
 }
 
 .settings > div > label {

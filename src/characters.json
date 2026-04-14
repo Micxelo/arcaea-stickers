@@ -23,9 +23,11 @@
         "strokeColor": "#3398c3",
         "defaultText": {
             "text": "嘿嘿★",
-            "x": 148,
-            "y": 58,
-            "rotate": -2,
+            "x": 108,
+            "y": 64,
+            "rotate": -3.4,
+            "arcRadius": 200,
+            "convex": true,
             "size": 40
         }
     },
@@ -37,10 +39,12 @@
         "color": "#fce8b6",
         "strokeColor": "#ea8d1c",
         "defaultText": {
-            "text": "嗨！",
-            "x": 148,
-            "y": 58,
-            "rotate": -2,
+            "text": "|||\n嗨！",
+            "x": 86,
+            "y": 56,
+            "rotate": -8,
+            "arcRadius": 200,
+            "convex": true,
             "size": 40
         }
     },
@@ -53,9 +57,11 @@
         "strokeColor": "#c01d36",
         "defaultText": {
             "text": "表现不错",
-            "x": 148,
-            "y": 58,
-            "rotate": -2,
+            "x": 180,
+            "y": 52,
+            "rotate": 1.8,
+            "arcRadius": 200,
+            "convex": true,
             "size": 40
         }
     },
@@ -68,10 +74,12 @@
         "strokeColor": "#ea5f90",
         "defaultText": {
             "text": "很棒喔！",
-            "x": 148,
+            "x": 190,
             "y": 58,
-            "rotate": -2,
-            "size": 40
+            "rotate": 4.4,
+            "arcRadius": 200,
+            "convex": true,
+            "size": 36
         }
     },
     {
@@ -83,10 +91,12 @@
         "strokeColor": "#6292de",
         "defaultText": {
             "text": "马上回来",
-            "x": 148,
-            "y": 58,
-            "rotate": -2,
-            "size": 40
+            "x": 124,
+            "y": 56,
+            "rotate": -1.4,
+            "arcRadius": 225,
+            "convex": true,
+            "size": 42
         }
     },
     {
@@ -98,10 +108,12 @@
         "strokeColor": "#7d4aa6",
         "defaultText": {
             "text": "哼哼！",
-            "x": 148,
-            "y": 58,
-            "rotate": -2,
-            "size": 40
+            "x": 100,
+            "y": 70,
+            "rotate": -4.8,
+            "arcRadius": 120,
+            "convex": true,
+            "size": 42
         }
     },
     {
@@ -130,10 +142,10 @@
         "strokeColor": "#ef4763",
         "defaultText": {
             "text": "欸——",
-            "x": 148,
-            "y": 58,
-            "rotate": -2,
-            "size": 40
+            "x": 160,
+            "y": 96,
+            "rotate": -1.2,
+            "size": 48
         }
     },
     {
@@ -147,9 +159,11 @@
         "extraStrokeColor": "#ef4763",
         "defaultText": {
             "text": "喜欢……",
-            "x": 148,
-            "y": 58,
-            "rotate": -2,
+            "x": 176,
+            "y": 76,
+            "rotate": 2.6,
+            "arcRadius": 180,
+            "convex": true,
             "size": 40
         }
     },
@@ -162,10 +176,12 @@
         "strokeColor": "#43a18d",
         "defaultText": {
             "text": "最后一首",
-            "x": 148,
-            "y": 58,
-            "rotate": -2,
-            "size": 40
+            "x": 124,
+            "y": 66,
+            "rotate": -2.6,
+            "arcRadius": 320,
+            "convex": true,
+            "size": 42
         }
     },
     {
@@ -177,10 +193,10 @@
         "strokeColor": "#bf1a33",
         "defaultText": {
             "text": "好！",
-            "x": 148,
-            "y": 58,
-            "rotate": -2,
-            "size": 40
+            "x": 144,
+            "y": 68,
+            "rotate": -1.6,
+            "size": 52
         }
     }
 ]

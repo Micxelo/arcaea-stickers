@@ -9,3 +9,9 @@ body {
   src: local('JingNanBoBoHei'), url(./fonts/JingNanBoBoHei.ttf) format('truetype');
   font-display: block;
 }
+
+@font-face {
+  font-family: 'YurukaStd';
+  src: local('YurukaStd'), url(./fonts/YurukaStd.woff2) format('woff2');
+  font-display: block;
+}

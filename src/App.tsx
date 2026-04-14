@@ -14,15 +14,6 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import InfoIcon from '@mui/icons-material/Info';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
-// 定义角色数据的类型
-interface DefaultText {
-  text: string;
-  x: number;
-  y: number;
-  rotate: number;
-  size: number;
-}
-
 interface Character {
   id: string;
   name: string;
@@ -32,7 +23,15 @@ interface Character {
   strokeColor: string;
   extraColor?: string;        // 存在时视为右侧文字颜色
   extraStrokeColor?: string;  // 存在时视为右侧文字描边颜色
-  defaultText: DefaultText;
+  defaultText: {
+    text: string;
+    x: number;
+    y: number;
+    rotate: number;
+    arcRadius?: number;       // 存在且为正数时视为弧形文字半径
+    convex?: boolean;         // 弧形文字是否向上凸出（true 为上凸）
+    size: number;
+  };
 }
 
 // 断言导入的 JSON 符合 Character[] 类型
@@ -56,11 +55,9 @@ const STROKE_CONFIG = {
   defaultColor: "#000000",  // 默认内圈描边颜色
 };
 
-const TEXT_CONFIG = {
-  defaultFontFamily: "JingNanBoBoHei",  // 默认字体
-  fallbackFonts: ["SSFangTangTi", "Microsoft YaHei", "sans-serif"], // 字体回退列表
-  curveRadiusFactor: 3.5, // 曲线文字半径调整因子
-  rotateUnit: 10,         // 旋转角度单位
+const FONT_CONFIG = {
+  defaultFontFamily: "JingNanBoBoHei", // 默认字体
+  fallbackFonts: ["YurukaStd", "Microsoft YaHei", "sans-serif"], // 字体回退列表
 };
 
 async function loadFont(family: string, url: string): Promise<boolean> {
@@ -84,7 +81,7 @@ async function loadFont(family: string, url: string): Promise<boolean> {
 function App() {
   const [infoOpen, setInfoOpen] = useState(false);
   const handleClickOpen= () => setInfoOpen(true);
-  const handleClose = () => setInfoOpen(false); 
+  const handleClose = () => setInfoOpen(false);
 
   const [character, setCharacter] = useState(2); // 默认角色（Hikari）
   const [text, setText] = useState(typedCharacters[character].defaultText.text);
@@ -95,7 +92,16 @@ function App() {
     x: typedCharacters[character].defaultText.x,
     y: typedCharacters[character].defaultText.y,
   });
-  const [curve, setCurve] = useState(false);
+
+  // 弧形文字
+  const initialArcRadius = typedCharacters[character].defaultText.arcRadius;
+  const initialCurve = initialArcRadius !== undefined && initialArcRadius > 0;
+
+  const [curve, setCurve] = useState<boolean>(initialCurve);
+  const [arcRadius, setArcRadius] = useState<number>(initialCurve ? initialArcRadius : 200);
+  const [convex, setConvex] = useState<boolean>(
+    typedCharacters[character].defaultText.convex ?? true
+  );
 
   // 自定义背景颜色
   const [bgColorEnabled, setBgColorEnabled] = useState(false); // 使用透明背景
@@ -104,7 +110,7 @@ function App() {
   // 默认文字颜色
   const [textColor, setTextColor] = useState<string>(typedCharacters[character].color);
   const [strokeColor, setStrokeColor] = useState<string>(typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor);
-  
+
   // 右侧文字颜色
   const [extraColorEnabled, setExtraColorEnabled] = useState<boolean>(false);
   const [extraColor, setExtraColor] = useState<string>(typedCharacters[character].extraColor || typedCharacters[character].color);
@@ -117,9 +123,10 @@ function App() {
 
   // 组件挂载时加载字体
   useEffect(() => {
-    loadFont("JingNanBoBoHei", "/fonts/JingNanBoBoHei.ttf").then(() => {
-      setFontLoaded(true);
-    });
+    Promise.all([
+      loadFont(FONT_CONFIG.defaultFontFamily, "/fonts/JingNanBoBoHei.ttf"),
+      loadFont("YurukaStd", "/fonts/YurukaStd.otf")
+    ]).then(() => setFontLoaded(true));
   }, []);
 
   // 切换角色时重置状态
@@ -134,6 +141,13 @@ function App() {
     setFontSize(curr.defaultText.size);
     setTextColor(curr.color);
     setStrokeColor(curr.strokeColor || STROKE_CONFIG.defaultColor);
+
+    // 处理弧形文字
+    const newArcRadius = curr.defaultText.arcRadius;
+    const newCurve = newArcRadius !== undefined && newArcRadius > 0;
+    setCurve(newCurve);
+    setArcRadius(newCurve ? newArcRadius : 200);
+    setConvex(curr.defaultText.convex ?? true);
 
     // 处理附加颜色
     if (curr.extraColor && curr.extraStrokeColor) {
@@ -155,17 +169,15 @@ function App() {
     setImgLoaded(true);
   };
 
-  let angle = (Math.PI * text.length) / 7;
-
   const draw = async (ctx: CanvasRenderingContext2D) => {
     ctx.canvas.width = CANVAS_CONFIG.outputWidth;
     ctx.canvas.height = CANVAS_CONFIG.outputHeight;
 
     if (!imgLoaded || !fontLoaded)
-      return; 
+      return;
 
     try {
-      await document.fonts.load(`${fontSize}px JingNanBoBoHei`, text);
+      await document.fonts.load(`${fontSize}px ${FONT_CONFIG.defaultFontFamily}`, text);
     } catch (error) {
       console.warn('字体加载失败，继续使用默认字体绘制', error);
     }
@@ -195,28 +207,103 @@ function App() {
       img.height * ratio
     );
 
-    ctx.font = `${fontSize}px 'JingNanBoBoHei', 'SSFangTangTi', 'Microsoft YaHei', sans-serif`;
+    ctx.font = `${fontSize}px '${FONT_CONFIG.defaultFontFamily}', ${FONT_CONFIG.fallbackFonts.map(f => `'${f}'`).join(', ')}`;
     ctx.lineWidth = 9;
     ctx.save();
 
     ctx.translate(position.x, position.y);
     ctx.rotate(rotate / 10);
     ctx.textAlign = "center";
-    
+
     // 外圈描边及文本颜色
     ctx.strokeStyle = "white";
     ctx.fillStyle = textColor; // 应用状态颜色
 
     var lines = text.split("\n");
     if (curve) {
+      const baseRadius = arcRadius;
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line) continue;
 
+        // k 是当前行的 Y 轴基线偏移量
+        const k = i * spaceSize;
+        // 计算当前行的实际半径，确保极小情况下不崩溃翻转
+        const currentRadius = Math.max(1, convex ? baseRadius - k : baseRadius + k);
+
+        // 拆分字符
+        const chars = Array.from(line);
+        const charWidths = chars.map(c => ctx.measureText(c).width);
+
+        // 计算行总角度，用于将整句居中对齐
+        const totalAngle = charWidths.reduce((sum, w) => sum + w, 0) / currentRadius;
+
+        const useExtra = extraColorEnabled && extraColor && extraStrokeColor;
+        const mid = Math.ceil(chars.length / 2);
+
+        // 分三次遍绘制
+        const passes = [
+          { type: 'outer', width: 18, stroke: 'white' },
+          { type: 'inner', width: 7 },
+          { type: 'fill' }
+        ];
+
+        passes.forEach(pass => {
+          let currentAngle = -totalAngle / 2;
+
+          for (let j = 0; j < chars.length; j++) {
+            const char = chars[j];
+            const w = charWidths[j];
+            const charAngle = w / currentRadius;
+            const alpha = currentAngle + charAngle / 2; // 当前字符中心所在的偏转角
+
+            const isExtra = useExtra && chars.length > 1 && j >= mid;
+
+            ctx.save();
+
+            // 根据凸凹状态计算字符在此曲线上的相对坐标
+            const x = currentRadius * Math.sin(alpha);
+            const y = convex
+              ? currentRadius - currentRadius * Math.cos(alpha)
+              : -currentRadius + currentRadius * Math.cos(alpha);
+
+            // 位移到对应位置
+            ctx.translate(x, y + k);
+            // 依据凸凹性和当前角度让字符保持法线朝向
+            ctx.rotate(convex ? alpha : -alpha);
+
+            ctx.textAlign = "center";
+            ctx.textBaseline = "alphabetic";
+
+            if (pass.type === 'outer') {
+              ctx.lineJoin = "round";
+              ctx.lineCap = "round";
+              ctx.lineWidth = pass.width as number;
+              ctx.strokeStyle = pass.stroke as string;
+              ctx.strokeText(char, 0, 0);
+            } else if (pass.type === 'inner') {
+              ctx.lineJoin = "miter";
+              ctx.lineCap = "butt";
+              ctx.lineWidth = pass.width as number;
+              ctx.strokeStyle = isExtra ? extraStrokeColor : strokeColor;
+              ctx.strokeText(char, 0, 0);
+            } else {
+              ctx.fillStyle = isExtra ? extraColor : textColor;
+              ctx.fillText(char, 0, 0);
+            }
+
+            ctx.restore();
+            currentAngle += charAngle; // 角度推进
+          }
+        });
+      }
     } else {
       // 逐行绘制
       for (var i = 0, k = 0; i < lines.length; i++) {
         const line = lines[i];
         // 判断是否启用分色绘制且颜色值有效
         const useExtra = extraColorEnabled && extraColor && extraStrokeColor;
-        
+
         if (useExtra && line.length > 1) { // 启用分色绘制
           // 将字符串一分为二（向上取整）
           const mid = Math.ceil(line.length / 2);
@@ -228,12 +315,12 @@ function App() {
 
           ctx.save();
 
-          // 外圈描边）
+          // 外圈描边
           ctx.lineJoin = "round";
           ctx.lineCap = "round";
           ctx.lineWidth = 18;
           ctx.strokeStyle = "white";
-          
+
           ctx.textAlign = "left";
           ctx.strokeText(leftText, -totalWidth / 2, k);
           ctx.textAlign = "right";
@@ -243,11 +330,11 @@ function App() {
           ctx.lineJoin = "miter";
           ctx.lineCap = "butt";
           ctx.lineWidth = 7;
-          
+
           ctx.textAlign = "left";
           ctx.strokeStyle = strokeColor; // 左侧内圈色
           ctx.strokeText(leftText, -totalWidth / 2, k);
-          
+
           ctx.textAlign = "right";
           ctx.strokeStyle = extraStrokeColor; // 右侧内圈色
           ctx.strokeText(rightText, totalWidth / 2, k);
@@ -256,13 +343,13 @@ function App() {
           ctx.textAlign = "left";
           ctx.fillStyle = textColor; // 左侧填充色
           ctx.fillText(leftText, -totalWidth / 2, k);
-          
+
           ctx.textAlign = "right";
           ctx.fillStyle = extraColor; // 右侧填充色
           ctx.fillText(rightText, totalWidth / 2, k);
 
           ctx.restore();
-          
+
           k += spaceSize;
         } else {
           // 外圈描边
@@ -282,7 +369,7 @@ function App() {
           // 填充
           ctx.fillStyle = textColor; // 应用状态颜色
           ctx.fillText(lines[i], 0, k);
-          
+
           k += spaceSize;
         }
       }
@@ -332,7 +419,7 @@ function App() {
             <h1>Arcaea 贴纸生成器</h1>
           </div>
           <div className="header-buttons">
-            <IconButton 
+            <IconButton
               color="secondary"
               component="a"
               href="https://github.com/Micxelo/arcaea-stickers"
@@ -343,7 +430,7 @@ function App() {
             >
               <GitHubIcon />
             </IconButton>
-            
+
             <IconButton
               color="secondary"
               onClick={handleClickOpen}
@@ -374,13 +461,14 @@ function App() {
               </div>
 
               <Slider
-                value={curve ? 256 - position.y + fontSize * 3 : 256 - position.y}
-                onChange={(e, v) =>
+                value={256 - position.y}
+                onChange={(_, v) =>
                   setPosition({
                     ...position,
-                    y: curve ? 256 + fontSize * 3 - (v as number) : 256 - (v as number),
+                    y: 256 - (v as number),
                   })
                 }
+                valueLabelDisplay="auto"
                 min={0}
                 max={CANVAS_CONFIG.outputHeight}
                 step={1}
@@ -395,7 +483,8 @@ function App() {
               <Slider
                 className="slider-horizontal"
                 value={position.x}
-                onChange={(e, v) => setPosition({ ...position, x: v as number })}
+                onChange={(_, v) => setPosition({ ...position, x: v as number })}
+                valueLabelDisplay="auto"
                 min={0}
                 max={CANVAS_CONFIG.outputWidth}
                 step={1}
@@ -450,7 +539,7 @@ function App() {
                 </div>
               )}
             </div>
-            
+
           </div>
 
           <div className="settings-area">
@@ -461,7 +550,7 @@ function App() {
                 </label>
                 <Slider
                   value={rotate}
-                  onChange={(e, v) => setRotate(v as number)}
+                  onChange={(_, v) => setRotate(v as number)}
                   valueLabelDisplay="auto"
                   min={-10}
                   max={10}
@@ -486,7 +575,7 @@ function App() {
                 </label>
                 <Slider
                   value={fontSize}
-                  onChange={(e, v) => setFontSize(v as number)}
+                  onChange={(_, v) => setFontSize(v as number)}
                   valueLabelDisplay="auto"
                   min={10}
                   max={100}
@@ -511,7 +600,7 @@ function App() {
                 </label>
                 <Slider
                   value={spaceSize}
-                  onChange={(e, v) => setSpaceSize(v as number)}
+                  onChange={(_, v) => setSpaceSize(v as number)}
                   valueLabelDisplay="auto"
                   min={18}
                   max={100}
@@ -530,16 +619,62 @@ function App() {
                   <RefreshIcon fontSize="small" />
                 </IconButton>
               </div>
-              <div className="switch-align-right">
-                <label>弧形文字</label>
-                <Switch
-                  checked={curve}
-                  onChange={(e) => setCurve(e.target.checked)}
-                  color="secondary"
-                  aria-label="弧形文字开关"
-                />
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <label>弧形文字</label>
+                  <Switch
+                    checked={curve}
+                    onChange={(e) => setCurve(e.target.checked)}
+                    color="secondary"
+                    aria-label="弧形文字开关"
+                  />
+                </div>
+                {curve && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <label style={{ whiteSpace: 'nowrap' }}>上凸</label>
+                    <Switch
+                      checked={convex}
+                      onChange={(e) => setConvex(e.target.checked)}
+                      color="secondary"
+                      aria-label="凹凸方向开关"
+                    />
+                  </div>
+                )}
               </div>
-              
+
+              {/* 弧形半径 */}
+              {curve && (
+                <div>
+                  <label>
+                    <span style={{ whiteSpace: 'nowrap' }}>半径</span>
+                  </label>
+                  <Slider
+                    value={arcRadius}
+                    onChange={(_, v) => setArcRadius(v as number)}
+                    valueLabelDisplay="auto"
+                    min={50}
+                    max={1000}
+                    step={5}
+                    track={false}
+                    color="secondary"
+                    aria-label="调整弧形半径"
+                  />
+                  <IconButton
+                    size="small"
+                    color="secondary"
+                    onClick={() => {
+                      const defR = typedCharacters[character].defaultText.arcRadius;
+                      setArcRadius((defR !== undefined && defR > 0) ? defR : 200);
+                    }}
+                    aria-label="重置弧半径"
+                    title="重置弧半径"
+                  >
+                    <RefreshIcon fontSize="small" />
+                  </IconButton>
+                </div>
+              )}
+
               {/* 颜色选取器 */}
               <div style={{ justifyContent: 'space-between', gap: '1rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -586,7 +721,7 @@ function App() {
               </div>
 
               {/* 分色绘制开关 */}
-              <div className="switch-align-right" style={{ marginTop: '0.5rem' }}>
+              <div style={{ marginTop: '0.5rem' }}>
                 <label>分色绘制</label>
                 <Switch
                   checked={extraColorEnabled}

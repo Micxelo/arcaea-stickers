@@ -21,6 +21,8 @@ interface Character {
   img: string;
   color: string;
   strokeColor?: string;
+  extraColor?: string;        // 存在时视为右侧文字颜色
+  extraStrokeColor?: string;  // 存在时视为右侧文字描边颜色
   defaultText: {
     text: string;
     x: number;
