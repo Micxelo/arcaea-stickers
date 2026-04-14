@@ -1,6 +1,6 @@
 import "./App.css";
 import Canvas from "./components/Canvas";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import characters from "./characters.json";
 import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
@@ -13,6 +13,8 @@ import Info from "./components/Info";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import InfoIcon from '@mui/icons-material/Info';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import UndoIcon from '@mui/icons-material/Undo';
+import RedoIcon from '@mui/icons-material/Redo';
 
 interface Character {
   id: string;
@@ -59,6 +61,26 @@ const FONT_CONFIG = {
   defaultFontFamily: "JingNanBoBoHei", // 默认字体
   fallbackFonts: ["YurukaStd", "Microsoft YaHei", "sans-serif"], // 字体回退列表
 };
+
+// 历史记录快照
+interface CanvasStateSnapshot {
+  character: number;
+  text: string;
+  fontSize: number;
+  spaceSize: number;
+  rotate: number;
+  position: { x: number; y: number };
+  curve: boolean;
+  arcRadius: number;
+  convex: boolean;
+  bgColorEnabled: boolean;
+  bgColor: string;
+  textColor: string;
+  strokeColor: string;
+  extraColorEnabled: boolean;
+  extraColor: string;
+  extraStrokeColor: string;
+}
 
 async function loadFont(family: string, url: string): Promise<boolean> {
   try {
@@ -116,8 +138,16 @@ function App() {
   const [extraColor, setExtraColor] = useState<string>(typedCharacters[character].extraColor || typedCharacters[character].color);
   const [extraStrokeColor, setExtraStrokeColor] = useState<string>(typedCharacters[character].extraStrokeColor || (typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor));
 
+  // 图片状态
   const [imgLoaded, setImgLoaded] = useState(false);
   const [fontLoaded, setFontLoaded] = useState(false);
+
+  // 历史记录状态
+  const [historyData, setHistoryData] = useState<{ list: CanvasStateSnapshot[], index: number }>({
+    list: [],
+    index: -1,
+  });
+  const isUndoRedoRef = useRef(false); // 标记当前的状态变化是否由“撤销/恢复”按钮引起的
 
   const img = new Image();
 
@@ -131,6 +161,9 @@ function App() {
 
   // 切换角色时重置状态
   useEffect(() => {
+    // 撤销/恢复操作触发的角色切换不重置状态
+    if (isUndoRedoRef.current) return;
+
     const curr = typedCharacters[character];
     setText(curr.defaultText.text);
     setPosition({
@@ -163,6 +196,90 @@ function App() {
     setSpaceSize(50);
     setImgLoaded(false);
   }, [character]);
+
+// 统一打包当前所有核心状态
+  const currentState: CanvasStateSnapshot = {
+    character, text, fontSize, spaceSize, rotate, position,
+    curve, arcRadius, convex, bgColorEnabled, bgColor,
+    textColor, strokeColor, extraColorEnabled, extraColor, extraStrokeColor
+  };
+
+  // 批量应用某个历史状态
+  const applySnapshot = (state: CanvasStateSnapshot) => {
+    setCharacter(state.character);
+    setText(state.text);
+    setFontSize(state.fontSize);
+    setSpaceSize(state.spaceSize);
+    setRotate(state.rotate);
+    setPosition(state.position);
+    setCurve(state.curve);
+    setArcRadius(state.arcRadius);
+    setConvex(state.convex);
+    setBgColorEnabled(state.bgColorEnabled);
+    setBgColor(state.bgColor);
+    setTextColor(state.textColor);
+    setStrokeColor(state.strokeColor);
+    setExtraColorEnabled(state.extraColorEnabled);
+    setExtraColor(state.extraColor);
+    setExtraStrokeColor(state.extraStrokeColor);
+  };
+
+  // 监听状态变化，防抖 300ms 后推入历史记录
+  useEffect(() => {
+    if (isUndoRedoRef.current) {
+      isUndoRedoRef.current = false; // 消费掉标记，放行后续的用户正常操作
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setHistoryData(prev => {
+        // 丢弃当前所在索引之后的历史
+        const currentSlice = prev.list.slice(0, prev.index + 1);
+        const lastState = currentSlice[currentSlice.length - 1];
+
+        // 状态没有任何变化，直接跳过
+        if (lastState && JSON.stringify(lastState) === JSON.stringify(currentState)) {
+          return prev;
+        }
+
+        const newList = [...currentSlice, currentState];
+        // 限制在 30 步以内
+        if (newList.length > 30) newList.shift(); 
+
+        return { list: newList, index: newList.length - 1 };
+      });
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [
+    character, text, fontSize, spaceSize, rotate, position.x, position.y,
+    curve, arcRadius, convex, bgColorEnabled, bgColor,
+    textColor, strokeColor, extraColorEnabled, extraColor, extraStrokeColor
+  ]);
+
+  const handleUndo = () => {
+    setHistoryData(prev => {
+      if (prev.index > 0) {
+        const newIndex = prev.index - 1;
+        isUndoRedoRef.current = true; // 标记本次状态改变是由撤销发起的
+        applySnapshot(prev.list[newIndex]);
+        return { ...prev, index: newIndex };
+      }
+      return prev;
+    });
+  };
+
+  const handleRedo = () => {
+    setHistoryData(prev => {
+      if (prev.index < prev.list.length - 1) {
+        const newIndex = prev.index + 1;
+        isUndoRedoRef.current = true; // 标记本次状态改变是由恢复发起的
+        applySnapshot(prev.list[newIndex]);
+        return { ...prev, index: newIndex };
+      }
+      return prev;
+    });
+  };
 
   img.src = "/img/" + typedCharacters[character].img;
   img.onload = () => {
@@ -419,6 +536,29 @@ function App() {
             <h1>Arcaea 贴纸生成器</h1>
           </div>
           <div className="header-buttons">
+            {/* 撤销 */}
+            <IconButton
+              color="secondary"
+              onClick={handleUndo}
+              disabled={historyData.index <= 0}
+              aria-label="撤销操作"
+              title="撤销"
+            >
+              <UndoIcon />
+            </IconButton>
+
+            {/* 恢复 */}
+            <IconButton
+              color="secondary"
+              onClick={handleRedo}
+              disabled={historyData.index >= historyData.list.length - 1}
+              aria-label="恢复操作"
+              title="恢复"
+            >
+              <RedoIcon />
+            </IconButton>
+
+            {/* GitHub */}
             <IconButton
               color="secondary"
               component="a"
@@ -431,6 +571,7 @@ function App() {
               <GitHubIcon />
             </IconButton>
 
+            {/* 关于 */}
             <IconButton
               color="secondary"
               onClick={handleClickOpen}
