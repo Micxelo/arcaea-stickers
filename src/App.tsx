@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import Picker from "./components/Picker";
 import Info from "./components/Info";
 
+import GitHubIcon from '@mui/icons-material/GitHub';
 import InfoIcon from '@mui/icons-material/Info';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
@@ -208,16 +209,7 @@ function App() {
 
     var lines = text.split("\n");
     if (curve) {
-      for (let line of lines) {
-        for (let i = 0; i < line.length; i++) {
-          ctx.rotate(angle / line.length / 2.5);
-          ctx.save();
-          ctx.translate(0, -1 * fontSize * 3.5);
-          ctx.strokeText(line[i], 0, 0);
-          ctx.fillText(line[i], 0, 0);
-          ctx.restore();
-        }
-      }
+
     } else {
       // 逐行绘制
       for (var i = 0, k = 0; i < lines.length; i++) {
@@ -340,7 +332,24 @@ function App() {
             <h1>Arcaea 贴纸生成器</h1>
           </div>
           <div className="header-buttons">
-            <IconButton color="secondary" onClick={handleClickOpen}>
+            <IconButton 
+              color="secondary"
+              component="a"
+              href="https://github.com/Micxelo/arcaea-stickers"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub 仓库链接"
+              title="GitHub 仓库"
+            >
+              <GitHubIcon />
+            </IconButton>
+            
+            <IconButton
+              color="secondary"
+              onClick={handleClickOpen}
+              aria-label="关于信息"
+              title="关于"
+            >
               <InfoIcon />
             </IconButton>
           </div>
@@ -350,9 +359,15 @@ function App() {
           <div className="canvas-area">
             <div className="vertical">
               <div style={{ position: "relative", display: "inline-block" }}>
-                <div className="canvas">
+                <div
+                  className="canvas"
+                  role="img"
+                  aria-label={`${typedCharacters[character].name} 贴纸预览`}
+                >
                   <Canvas draw={draw} />
                 </div>
+
+                {/* 角色选择器 */}
                 <div style={{ position: "absolute", bottom: -45, right: -45, zIndex: 1 }}>
                   <Picker setCharacter={setCharacter} />
                 </div>
@@ -372,6 +387,7 @@ function App() {
                 orientation="vertical"
                 track={false}
                 color="secondary"
+                aria-label="调整文字垂直位置"
               />
             </div>
 
@@ -385,6 +401,7 @@ function App() {
                 step={1}
                 track={false}
                 color="secondary"
+                aria-label="调整文字水平位置"
               />
             </div>
 
@@ -408,6 +425,7 @@ function App() {
                   checked={bgColorEnabled}
                   onChange={(e) => setBgColorEnabled(e.target.checked)}
                   color="secondary"
+                  aria-label="背景颜色开关"
                 />
               </div>
               {bgColorEnabled && (
@@ -417,11 +435,14 @@ function App() {
                     className="color-picker-input"
                     value={bgColor}
                     onChange={(e) => setBgColor(e.target.value)}
+                    aria-label="背景颜色选择器"
+                    title="选择背景颜色"
                   />
                   <IconButton
                     size="small"
                     color="secondary"
                     onClick={() => setBgColor("#ffffff")}
+                    aria-label="重置背景颜色"
                     title="重置背景色为白色"
                   >
                     <RefreshIcon fontSize="small" />
@@ -447,11 +468,13 @@ function App() {
                   step={0.2}
                   track={false}
                   color="secondary"
+                  aria-label="调整旋转角度"
                 />
                 <IconButton
                   size="small"
                   color="secondary"
                   onClick={() => setRotate(typedCharacters[character].defaultText.rotate)}
+                  aria-label="重置旋转角度"
                   title="重置旋转角度"
                 >
                   <RefreshIcon fontSize="small" />
@@ -470,11 +493,13 @@ function App() {
                   step={1}
                   track={false}
                   color="secondary"
+                  aria-label="调整字体大小"
                 />
                 <IconButton
                   size="small"
                   color="secondary"
                   onClick={() => setFontSize(typedCharacters[character].defaultText.size)}
+                  aria-label="重置字体大小"
                   title="重置字体大小"
                 >
                   <RefreshIcon fontSize="small" />
@@ -493,11 +518,13 @@ function App() {
                   step={1}
                   track={false}
                   color="secondary"
+                  aria-label="调整行间距"
                 />
                 <IconButton
                   size="small"
                   color="secondary"
                   onClick={() => setSpaceSize(18)}
+                  aria-label="重置行间距"
                   title="重置行间距"
                 >
                   <RefreshIcon fontSize="small" />
@@ -509,6 +536,7 @@ function App() {
                   checked={curve}
                   onChange={(e) => setCurve(e.target.checked)}
                   color="secondary"
+                  aria-label="弧形文字开关"
                 />
               </div>
               
@@ -521,11 +549,14 @@ function App() {
                     className="color-picker-input"
                     value={textColor}
                     onChange={(e) => setTextColor(e.target.value)}
+                    aria-label="文字颜色选择器"
+                    title="选择文字颜色"
                   />
                   <IconButton
                     size="small"
                     color="secondary"
                     onClick={() => setTextColor(typedCharacters[character].color)}
+                    aria-label="重置文字颜色"
                     title="重置为角色默认颜色"
                   >
                     <RefreshIcon fontSize="small" />
@@ -539,11 +570,14 @@ function App() {
                     className="color-picker-input"
                     value={strokeColor}
                     onChange={(e) => setStrokeColor(e.target.value)}
+                    aria-label="描边颜色选择器"
+                    title="选择描边颜色"
                   />
                   <IconButton
                     size="small"
                     color="secondary"
                     onClick={() => setStrokeColor(typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor)}
+                    aria-label="重置描边颜色"
                     title="重置为角色默认描边颜色"
                   >
                     <RefreshIcon fontSize="small" />
@@ -558,6 +592,7 @@ function App() {
                   checked={extraColorEnabled}
                   onChange={(e) => setExtraColorEnabled(e.target.checked)}
                   color="secondary"
+                  aria-label="分色绘制开关"
                 />
               </div>
 
@@ -571,6 +606,8 @@ function App() {
                       className="color-picker-input"
                       value={extraColor}
                       onChange={(e) => setExtraColor(e.target.value)}
+                      aria-label="附加颜色选择器"
+                      title="选择附加文字颜色"
                     />
                     <IconButton
                       size="small"
@@ -583,6 +620,7 @@ function App() {
                           setExtraColor(textColor);
                         }
                       }}
+                      aria-label="重置附加颜色"
                       title="重置为默认值"
                     >
                       <RefreshIcon fontSize="small" />
@@ -596,6 +634,8 @@ function App() {
                       className="color-picker-input"
                       value={extraStrokeColor}
                       onChange={(e) => setExtraStrokeColor(e.target.value)}
+                      aria-label="附加描边颜色选择器"
+                      title="选择附加描边颜色"
                     />
                     <IconButton
                       size="small"
@@ -608,6 +648,7 @@ function App() {
                           setExtraStrokeColor(strokeColor);
                         }
                       }}
+                      aria-label="重置附加描边颜色"
                       title="重置为默认值"
                     >
                       <RefreshIcon fontSize="small" />
@@ -618,10 +659,10 @@ function App() {
             </div>
 
             <div className="buttons">
-              <Button color="secondary" variant="contained" onClick={copy}>
+              <Button color="secondary" variant="contained" onClick={copy} aria-label="复制贴纸到剪贴板">
                 复制
               </Button>
-              <Button color="secondary" variant="contained" onClick={download}>
+              <Button color="secondary" variant="contained" onClick={download} aria-label="下载贴纸">
                 下载
               </Button>
             </div>

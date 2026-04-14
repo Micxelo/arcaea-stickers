@@ -1,4 +1,5 @@
-// src/components/Picker.tsx
+// Picker.tsx
+
 import {
   Dialog,
   DialogContent,
@@ -62,11 +63,14 @@ export default function Picker({ setCharacter }: PickerProps) {
             "&:hover": { opacity: 0.5 },
             "&:active": { opacity: 0.8 },
           }}
+          role="button"
+          tabIndex={0}
+          aria-label={`选择角色 ${c.name} ${c.character}`}
         >
           <img
             src={`/img/${c.img}`}
             srcSet={`/img/${c.img}`}
-            alt={c.name}
+            alt={c.name + " " + c.character}
             loading="lazy"
             style={{
               width: "100%",
@@ -83,13 +87,19 @@ export default function Picker({ setCharacter }: PickerProps) {
 
   return (
     <>
-      <IconButton color="secondary" onClick={handleOpen}>
+      <IconButton
+        color="secondary"
+        onClick={handleOpen}
+        aria-label="打开角色选择器"
+        title="选择角色"
+      >
         <SearchIcon />
       </IconButton>
       <Dialog
         open={open}
         onClose={handleClose}
         maxWidth={false}
+        aria-labelledby="picker-dialog-title"
         PaperProps={{
           sx: {
             width: '100%',
@@ -113,6 +123,10 @@ export default function Picker({ setCharacter }: PickerProps) {
               value={search}
               fullWidth
               onChange={(e) => setSearch(e.target.value)}
+              inputProps={{
+                "aria-label": "搜索角色",
+                "aria-describedby": "picker-search-helper-text",
+              }}
             />
           </div>
           <div className="image-grid-wrapper" style={{ overflowX: "hidden", width: "100%" }}>
@@ -132,17 +146,16 @@ export default function Picker({ setCharacter }: PickerProps) {
               <ImageList
                 sx={{
                   width: "100%",
-                  height: 450,
+                  height: "100%",
                   overflowX: "hidden",
                   overflowY: "auto",
-                  margin: 0,
                 }}
-                cols={4}
+                cols={3}
                 rowHeight="auto"
                 gap={8}
                 className="image-grid"
               >
-                {filteredItems}
+                {validItems}
               </ImageList>
             )}
           </div>

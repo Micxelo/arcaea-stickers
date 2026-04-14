@@ -37,6 +37,7 @@
   justify-content: center;
   display: flex;
   flex-direction: column;
+  font-family: var(--font-family-main);
 }
 
 /* 设置区域容器 */
@@ -70,7 +71,6 @@
 /* 设置区域 */
 .settings {
   color: white;
-  font-family: var(--font-family-main);
   margin: 1.5rem 0 1.5rem 0;
 }
 
