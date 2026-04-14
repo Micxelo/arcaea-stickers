@@ -380,7 +380,7 @@ function App() {
   const download = async () => {
     const canvas = document.getElementsByTagName("canvas")[0];
     const link = document.createElement("a");
-    link.download = `${typedCharacters[character].name}_st.ayaka.one.png`;
+    link.download = `${typedCharacters[character].name}_${text.substring(0, 10)}_arcst.micxelo.moe.png`;
     link.href = canvas.toDataURL();
     link.click();
   };
@@ -804,6 +804,8 @@ function App() {
           </div>
         </div>
       </div>
+
+      <Info open={infoOpen} handleClose={handleClose} />
     </div>
   );
 }
