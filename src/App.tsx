@@ -15,6 +15,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
+import ShareIcon from '@mui/icons-material/Share';
 
 interface Character {
   id: string;
@@ -197,7 +198,7 @@ function App() {
     setImgLoaded(false);
   }, [character]);
 
-// 统一打包当前所有核心状态
+  // 统一打包当前状态
   const currentState: CanvasStateSnapshot = {
     character, text, fontSize, spaceSize, rotate, position,
     curve, arcRadius, convex, bgColorEnabled, bgColor,
@@ -244,7 +245,7 @@ function App() {
 
         const newList = [...currentSlice, currentState];
         // 限制在 30 步以内
-        if (newList.length > 30) newList.shift(); 
+        if (newList.length > 30) newList.shift();
 
         return { list: newList, index: newList.length - 1 };
       });
@@ -279,6 +280,44 @@ function App() {
       }
       return prev;
     });
+  };
+
+  // 分享
+  const handleShare = async () => {
+    if (!navigator.share)
+      return;
+
+    const canvas = document.getElementsByTagName("canvas")[0];
+    if (!canvas)
+      return;
+
+    canvas.toBlob(async (blob) => {
+      if (!blob)
+        return;
+
+      // 生成与下载类似的文件名
+      const fileName = `${typedCharacters[character].name}_${text.substring(0, 10)}_arcst.png`;
+      const file = new File([blob], fileName, { type: "image/png" });
+
+      const shareData = {
+        title: "Arcaea 贴纸",
+        text: `这是我用 Arcaea 贴纸生成器 制作的 ${typedCharacters[character].name} 贴纸！`,
+        url: "https://arcst.micxelo.moe",
+        files: [file],
+      };
+
+      // 检查当前设备/浏览器是否支持分享
+      if (navigator.canShare && navigator.canShare(shareData)) {
+        try {
+          await navigator.share(shareData);
+        } catch (error) {
+          // 用户取消分享
+          console.log("分享操作已结束或取消:", error);
+        }
+      } else {
+        alert("您的浏览器不支持直接分享图片文件，请使用下载或复制功能。");
+      }
+    }, "image/png");
   };
 
   img.src = "/img/" + typedCharacters[character].img;
@@ -557,6 +596,18 @@ function App() {
             >
               <RedoIcon />
             </IconButton>
+
+            {/* 分享 */}
+            {typeof navigator !== "undefined" && typeof navigator.share === "function" && (
+              <IconButton
+                color="secondary"
+                onClick={handleShare}
+                aria-label="分享贴纸"
+                title="分享"
+              >
+                <ShareIcon />
+              </IconButton>
+            )}
 
             {/* GitHub */}
             <IconButton
