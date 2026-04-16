@@ -223,6 +223,8 @@ function App() {
   const applySnapshot = (state: CanvasStateSnapshot) => {
     setCharacter(state.character);
     setText(state.text);
+    setText2(state.text2 || "");
+    setAutoSplit(state.autoSplit ?? true);
     setFontSize(state.fontSize);
     setSpaceSize(state.spaceSize);
     setRotate(state.rotate);
@@ -267,9 +269,9 @@ function App() {
 
     return () => clearTimeout(timer);
   }, [
-    character, text, fontSize, spaceSize, rotate, position.x, position.y,
+    character, text, text2, fontSize, spaceSize, rotate, position.x, position.y,
     curve, arcRadius, convex, bgColorEnabled, bgColor,
-    textColor, strokeColor, extraColorEnabled, extraColor, extraStrokeColor
+    textColor, strokeColor, extraColorEnabled, extraColor, extraStrokeColor, autoSplit
   ]);
 
   const handleUndo = () => {
