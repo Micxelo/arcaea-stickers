@@ -28,6 +28,7 @@ interface Character {
   extraStrokeColor?: string;  // 存在时视为右侧文字描边颜色
   defaultText: {
     text: string;
+    text2?: string;           // 存在时关闭自动分割并作为右侧文本
     x: number;
     y: number;
     rotate: number;
@@ -67,6 +68,7 @@ const FONT_CONFIG = {
 interface CanvasStateSnapshot {
   character: number;
   text: string;
+  text2: string;
   fontSize: number;
   spaceSize: number;
   rotate: number;
@@ -81,6 +83,7 @@ interface CanvasStateSnapshot {
   extraColorEnabled: boolean;
   extraColor: string;
   extraStrokeColor: string;
+  autoSplit: boolean;
 }
 
 async function loadFont(family: string, url: string): Promise<boolean> {
@@ -107,7 +110,14 @@ function App() {
   const handleClose = () => setInfoOpen(false);
 
   const [character, setCharacter] = useState(2); // 默认角色（Hikari）
+
+  const initialText2 = typedCharacters[character].defaultText.text2 || "";
+  const initialAutoSplit = typedCharacters[character].defaultText.text2 === undefined;
+
   const [text, setText] = useState(typedCharacters[character].defaultText.text);
+  const [text2, setText2] = useState<string>(initialText2);       // ⬅️ 新增
+  const [autoSplit, setAutoSplit] = useState<boolean>(initialAutoSplit); // ⬅️ 新增
+
   const [fontSize, setFontSize] = useState<number>(typedCharacters[character].defaultText.size);
   const [spaceSize, setSpaceSize] = useState<number>(50);
   const [rotate, setRotate] = useState<number>(typedCharacters[character].defaultText.rotate);
@@ -166,7 +176,11 @@ function App() {
     if (isUndoRedoRef.current) return;
 
     const curr = typedCharacters[character];
+
     setText(curr.defaultText.text);
+    setText2(curr.defaultText.text2 || "");
+    setAutoSplit(curr.defaultText.text2 === undefined);
+
     setPosition({
       x: curr.defaultText.x,
       y: curr.defaultText.y,
@@ -200,9 +214,9 @@ function App() {
 
   // 统一打包当前状态
   const currentState: CanvasStateSnapshot = {
-    character, text, fontSize, spaceSize, rotate, position,
+    character, text, text2, fontSize, spaceSize, rotate, position,
     curve, arcRadius, convex, bgColorEnabled, bgColor,
-    textColor, strokeColor, extraColorEnabled, extraColor, extraStrokeColor
+    textColor, strokeColor, extraColorEnabled, extraColor, extraStrokeColor, autoSplit
   };
 
   // 批量应用某个历史状态
@@ -375,29 +389,33 @@ function App() {
     ctx.strokeStyle = "white";
     ctx.fillStyle = textColor; // 应用状态颜色
 
-    var lines = text.split("\n");
+    const linesLeft = text.split("\n");
+    const linesRight = text2.split("\n");
+    const useExtraMode = extraColorEnabled && extraColor && extraStrokeColor;
+    const maxLines = (useExtraMode && !autoSplit) ? Math.max(linesLeft.length, linesRight.length) : linesLeft.length;
+
     if (curve) {
       const baseRadius = arcRadius;
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
+      for (let i = 0; i < maxLines; i++) {
+        const leftStr = linesLeft[i] || "";
+        const rightStr = (useExtraMode && !autoSplit) ? (linesRight[i] || "") : "";
+        const line = (useExtraMode && !autoSplit) ? (leftStr + rightStr) : leftStr;
+
         if (!line) continue;
 
-        // k 是当前行的 Y 轴基线偏移量
         const k = i * spaceSize;
-        // 计算当前行的实际半径，确保极小情况下不崩溃翻转
         const currentRadius = Math.max(1, convex ? baseRadius - k : baseRadius + k);
 
-        // 拆分字符
         const chars = Array.from(line);
         const charWidths = chars.map(c => ctx.measureText(c).width);
-
-        // 计算行总角度，用于将整句居中对齐
         const totalAngle = charWidths.reduce((sum, w) => sum + w, 0) / currentRadius;
 
-        const useExtra = extraColorEnabled && extraColor && extraStrokeColor;
-        const mid = Math.ceil(chars.length / 2);
+        // 计算拆分点
+        let splitIndex = chars.length;
+        if (useExtraMode) {
+          splitIndex = autoSplit ? Math.ceil(chars.length / 2) : Array.from(leftStr).length;
+        }
 
-        // 分三次遍绘制
         const passes = [
           { type: 'outer', width: 18, stroke: 'white' },
           { type: 'inner', width: 7 },
@@ -411,9 +429,10 @@ function App() {
             const char = chars[j];
             const w = charWidths[j];
             const charAngle = w / currentRadius;
-            const alpha = currentAngle + charAngle / 2; // 当前字符中心所在的偏转角
+            const alpha = currentAngle + charAngle / 2; 
 
-            const isExtra = useExtra && chars.length > 1 && j >= mid;
+            // 判断当前字符是否该上副色
+            const isExtra = useExtraMode && (autoSplit ? chars.length > 1 : true) && j >= splitIndex;
 
             ctx.save();
 
@@ -438,7 +457,7 @@ function App() {
               ctx.strokeStyle = pass.stroke as string;
               ctx.strokeText(char, 0, 0);
             } else if (pass.type === 'inner') {
-              ctx.lineJoin = "miter";
+              ctx.lineJoin = "round";
               ctx.lineCap = "butt";
               ctx.lineWidth = pass.width as number;
               ctx.strokeStyle = isExtra ? extraStrokeColor : strokeColor;
@@ -455,19 +474,25 @@ function App() {
       }
     } else {
       // 逐行绘制
-      for (var i = 0, k = 0; i < lines.length; i++) {
-        const line = lines[i];
-        // 判断是否启用分色绘制且颜色值有效
-        const useExtra = extraColorEnabled && extraColor && extraStrokeColor;
+      for (var i = 0, k = 0; i < maxLines; i++) {
+        const leftStr = linesLeft[i] || "";
+        const rightStr = (useExtraMode && !autoSplit) ? (linesRight[i] || "") : "";
+        const line = (useExtraMode && !autoSplit) ? (leftStr + rightStr) : leftStr;
 
-        if (useExtra && line.length > 1) { // 启用分色绘制
-          // 将字符串一分为二（向上取整）
-          const mid = Math.ceil(line.length / 2);
-          const leftText = line.substring(0, mid);
-          const rightText = line.substring(mid);
+        if (useExtraMode && (autoSplit ? line.length > 1 : (leftStr.length > 0 || rightStr.length > 0))) { 
+          // 根据模式拆分左右文字
+          let leftText = "";
+          let rightText = "";
+          if (autoSplit) {
+            const mid = Math.ceil(line.length / 2);
+            leftText = line.substring(0, mid);
+            rightText = line.substring(mid);
+          } else {
+            leftText = leftStr;
+            rightText = rightStr;
+          }
 
-          // 获取整段文字的原始宽度
-          const totalWidth = ctx.measureText(line).width;
+          const totalWidth = ctx.measureText(leftText + rightText).width;
 
           ctx.save();
 
@@ -483,7 +508,7 @@ function App() {
           ctx.strokeText(rightText, totalWidth / 2, k);
 
           // 内圈描边
-          ctx.lineJoin = "miter";
+          ctx.lineJoin = "round";
           ctx.lineCap = "butt";
           ctx.lineWidth = 7;
 
@@ -513,18 +538,18 @@ function App() {
           ctx.lineCap = 'round';
           ctx.lineWidth = 18;
           ctx.strokeStyle = "white";
-          ctx.strokeText(lines[i], 0, k);
+          ctx.strokeText(line, 0, k);
 
           // 内圈描边
-          ctx.lineJoin = "miter";
+          ctx.lineJoin = "round";
           ctx.lineCap = 'butt';
           ctx.lineWidth = 7;
           ctx.strokeStyle = strokeColor; // 应用状态颜色
-          ctx.strokeText(lines[i], 0, k);
+          ctx.strokeText(line, 0, k);
 
           // 填充
           ctx.fillStyle = textColor; // 应用状态颜色
-          ctx.fillText(lines[i], 0, k);
+          ctx.fillText(line, 0, k);
 
           k += spaceSize;
         }
@@ -687,8 +712,9 @@ function App() {
             </div>
 
             <div className="text">
+              {/* 默认文本框 */}
               <TextField
-                label="文字内容"
+                label={extraColorEnabled && !autoSplit ? "左侧文字" : "文字内容"}
                 size="small"
                 color="secondary"
                 value={text}
@@ -696,6 +722,21 @@ function App() {
                 fullWidth
                 onChange={(e) => setText(e.target.value)}
               />
+            </div>
+            <div className="text">
+              {/* 右侧文字框 */}
+              {extraColorEnabled && !autoSplit && (
+                <TextField
+                  label="右侧文字"
+                  size="small"
+                  color="secondary"
+                  value={text2}
+                  multiline={true}
+                  fullWidth
+                  onChange={(e) => setText2(e.target.value)}
+                  style={{ marginTop: '1rem' }}
+                />
+              )}
             </div>
 
             {/* 背景颜色开关与选择器 */}
@@ -912,15 +953,28 @@ function App() {
                 </div>
               </div>
 
-              {/* 分色绘制开关 */}
-              <div style={{ marginTop: '0.5rem' }}>
-                <label>分色绘制</label>
-                <Switch
-                  checked={extraColorEnabled}
-                  onChange={(e) => setExtraColorEnabled(e.target.checked)}
-                  color="secondary"
-                  aria-label="分色绘制开关"
-                />
+              {/* 分色绘制与自动分割开关 */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <label>分色绘制</label>
+                  <Switch
+                    checked={extraColorEnabled}
+                    onChange={(e) => setExtraColorEnabled(e.target.checked)}
+                    color="secondary"
+                    aria-label="分色绘制开关"
+                  />
+                </div>
+                {extraColorEnabled && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <label style={{ whiteSpace: 'nowrap' }}>自动分割</label>
+                    <Switch
+                      checked={autoSplit}
+                      onChange={(e) => setAutoSplit(e.target.checked)}
+                      color="secondary"
+                      aria-label="自动分割开关"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* 条件渲染的额外颜色选择器 */}

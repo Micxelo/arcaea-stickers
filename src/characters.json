@@ -158,9 +158,10 @@
         "extraColor": "#f6c2cb",
         "extraStrokeColor": "#ef4763",
         "defaultText": {
-            "text": "喜欢……",
+            "text": "喜",
+            "text2": "欢......",
             "x": 176,
-            "y": 76,
+            "y": 66,
             "rotate": 2.6,
             "arcRadius": 180,
             "convex": true,
