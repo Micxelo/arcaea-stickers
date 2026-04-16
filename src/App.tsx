@@ -1,21 +1,27 @@
+// App.tsx
+
 import "./App.css";
 import Canvas from "./components/Canvas";
-import { useState, useEffect, useRef } from "react";
+import Picker from "./components/Picker";
+import Info from "./components/Info";
+import ShortcutsHelp from './components/ShortcutsHelp';
 import characters from "./characters.json";
+
+import { useState, useEffect, useRef } from "react";
 import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Switch from "@mui/material/Switch";
 import IconButton from '@mui/material/IconButton';
-import Picker from "./components/Picker";
-import Info from "./components/Info";
+import Tooltip from '@mui/material/Tooltip';
 
-import GitHubIcon from '@mui/icons-material/GitHub';
-import InfoIcon from '@mui/icons-material/Info';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import ShareIcon from '@mui/icons-material/Share';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import KeyboardIcon from '@mui/icons-material/Keyboard';
+import InfoIcon from '@mui/icons-material/Info';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface Character {
   id: string;
@@ -105,9 +111,8 @@ async function loadFont(family: string, url: string): Promise<boolean> {
 }
 
 function App() {
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
-  const handleClickOpen= () => setInfoOpen(true);
-  const handleClose = () => setInfoOpen(false);
 
   const [character, setCharacter] = useState(2); // 默认角色（Hikari）
 
@@ -170,11 +175,8 @@ function App() {
     ]).then(() => setFontLoaded(true));
   }, []);
 
-  // 切换角色时重置状态
-  useEffect(() => {
-    // 撤销/恢复操作触发的角色切换不重置状态
-    if (isUndoRedoRef.current) return;
-
+  // 重置状态为当前角色的默认值
+  const resetAllState = () => {
     const curr = typedCharacters[character];
 
     setText(curr.defaultText.text);
@@ -209,6 +211,13 @@ function App() {
     }
 
     setSpaceSize(50);
+  }
+
+  // 切换角色时重置状态
+  useEffect(() => {
+    if (isUndoRedoRef.current)
+      return; // 撤销/恢复操作触发的角色切换不重置状态
+    resetAllState();
     setImgLoaded(false);
   }, [character]);
 
@@ -431,7 +440,7 @@ function App() {
             const char = chars[j];
             const w = charWidths[j];
             const charAngle = w / currentRadius;
-            const alpha = currentAngle + charAngle / 2; 
+            const alpha = currentAngle + charAngle / 2;
 
             // 判断当前字符是否该上副色
             const isExtra = useExtraMode && (autoSplit ? chars.length > 1 : true) && j >= splitIndex;
@@ -481,7 +490,7 @@ function App() {
         const rightStr = (useExtraMode && !autoSplit) ? (linesRight[i] || "") : "";
         const line = (useExtraMode && !autoSplit) ? (leftStr + rightStr) : leftStr;
 
-        if (useExtraMode && (autoSplit ? line.length > 1 : (leftStr.length > 0 || rightStr.length > 0))) { 
+        if (useExtraMode && (autoSplit ? line.length > 1 : (leftStr.length > 0 || rightStr.length > 0))) {
           // 根据模式拆分左右文字
           let leftText = "";
           let rightText = "";
@@ -594,6 +603,95 @@ function App() {
     ]);
   };
 
+  // 全局快捷键监听
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 焦点在文本框时不触发快捷键
+      const activeTag = document.activeElement?.tagName.toLowerCase();
+      if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select')
+        return;
+
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+
+      // 复制 (Ctrl/Cmd + C)
+      if (isCmdOrCtrl && e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        copy();
+      }
+
+      // 下载 (Ctrl/Cmd + S)
+      if (isCmdOrCtrl && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        download();
+      }
+
+      // 撤销 (Ctrl/Cmd + Z)
+      if (isCmdOrCtrl && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        handleUndo();
+      }
+
+      // 恢复 (Ctrl/Cmd + Shift + Z 或 Ctrl/Cmd + Y)
+      if (isCmdOrCtrl && ((e.key.toLowerCase() === 'z' && e.shiftKey) || e.key.toLowerCase() === 'y')) {
+        e.preventDefault();
+        handleRedo();
+      }
+
+      // 重置 (Ctrl/Cmd + R)
+      if (isCmdOrCtrl && e.key.toLowerCase() === 'r') {
+        e.preventDefault();
+        resetAllState();
+      }
+
+      // 方向键调整位置 (步长 1，Shift 步长 5)
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault(); // 阻止页面默认滚动
+        const step = e.shiftKey ? 5 : 1;
+        setPosition(prev => {
+          let { x, y } = prev;
+          if (e.key === 'ArrowUp') y -= step;    // Canvas 坐标系中 y 减小代表向上移动
+          if (e.key === 'ArrowDown') y += step;
+          if (e.key === 'ArrowLeft') x -= step;
+          if (e.key === 'ArrowRight') x += step;
+
+          // 限制在画布范围内
+          return {
+            x: Math.max(0, Math.min(x, CANVAS_CONFIG.outputWidth)),
+            y: Math.max(0, Math.min(y, CANVAS_CONFIG.outputHeight))
+          };
+        });
+      }
+
+      // 增大字号 ( + / = / NumpadAdd )
+      if (e.key === '+' || e.key === '=' || e.code === 'NumpadAdd') {
+        e.preventDefault();
+        setFontSize(prev => Math.min(100, prev + 1)); // 限制最大为 100
+      }
+
+      // 减小字号 ( - / NumpadSubtract )
+      if (e.key === '-' || e.code === 'NumpadSubtract') {
+        e.preventDefault();
+        setFontSize(prev => Math.max(10, prev - 1));  // 限制最小为 10
+      }
+
+      // 逆时针旋转 ( [ )
+      if (e.key === '[') {
+        e.preventDefault();
+        setRotate(prev => Math.max(-10, Math.round((prev - 0.2) * 10) / 10));
+      }
+
+      // 顺时针旋转 ( ] )
+      if (e.key === ']') {
+        e.preventDefault();
+        setRotate(prev => Math.min(10, Math.round((prev + 0.2) * 10) / 10));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+
+  }, [character, text, text2, copy, download, handleUndo, handleRedo]);
+
   return (
     <div className="App">
       <div className="app-wrapper">
@@ -649,10 +747,22 @@ function App() {
               <GitHubIcon />
             </IconButton>
 
+            {/* 快捷键帮助 */}
+            <Tooltip title="快捷键帮助">
+              <IconButton
+                color="secondary"
+                onClick={() => setShortcutsOpen(true)}
+                aria-label="打开快捷键帮助"
+                sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
+              >
+                <KeyboardIcon />
+              </IconButton>
+            </Tooltip>
+
             {/* 关于 */}
             <IconButton
               color="secondary"
-              onClick={handleClickOpen}
+              onClick={() => setInfoOpen(true)}
               aria-label="关于信息"
               title="关于"
             >
@@ -1053,7 +1163,8 @@ function App() {
         </div>
       </div>
 
-      <Info open={infoOpen} handleClose={handleClose} />
+      <ShortcutsHelp open={shortcutsOpen} handleClose={() => setShortcutsOpen(false)} />
+      <Info open={infoOpen} handleClose={() => setInfoOpen(false)} />
     </div>
   );
 }

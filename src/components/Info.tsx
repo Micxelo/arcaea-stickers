@@ -1,3 +1,6 @@
+// Info.tsx
+// 显示关于与致谢信息的对话框组件
+
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";

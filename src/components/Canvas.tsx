@@ -1,4 +1,5 @@
 // Canvas.tsx
+// 画布组件
 
 import { useRef, useEffect } from 'react';
 import "../index.css";

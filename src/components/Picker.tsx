@@ -1,4 +1,5 @@
 // Picker.tsx
+// 角色选择器组件
 
 import {
   Dialog,
