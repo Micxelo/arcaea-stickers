@@ -701,51 +701,59 @@ function App() {
           </div>
           <div className="header-buttons">
             {/* 撤销 */}
-            <IconButton
-              color="secondary"
-              onClick={handleUndo}
-              disabled={historyData.index <= 0}
-              aria-label="撤销操作"
-              title="撤销"
-            >
-              <UndoIcon />
-            </IconButton>
+            <Tooltip title="撤销">
+              <IconButton
+                color="secondary"
+                onClick={handleUndo}
+                disabled={historyData.index <= 0}
+                aria-label="撤销操作"
+                title="撤销"
+              >
+                <UndoIcon />
+              </IconButton>
+            </Tooltip>
 
             {/* 恢复 */}
-            <IconButton
-              color="secondary"
-              onClick={handleRedo}
-              disabled={historyData.index >= historyData.list.length - 1}
-              aria-label="恢复操作"
-              title="恢复"
-            >
-              <RedoIcon />
-            </IconButton>
+            <Tooltip title="恢复">
+              <IconButton
+                color="secondary"
+                onClick={handleRedo}
+                disabled={historyData.index >= historyData.list.length - 1}
+                aria-label="恢复操作"
+                title="恢复"
+              >
+                <RedoIcon />
+              </IconButton>
+            </Tooltip>
 
             {/* 分享 */}
             {typeof navigator !== "undefined" && typeof navigator.share === "function" && (
-              <IconButton
-                color="secondary"
-                onClick={handleShare}
-                aria-label="分享贴纸"
-                title="分享"
-              >
-                <ShareIcon />
-              </IconButton>
+              <Tooltip title="分享贴纸">
+                <IconButton
+                  color="secondary"
+                  onClick={handleShare}
+                  aria-label="分享贴纸"
+                  title="分享"
+                >
+                  <ShareIcon />
+                </IconButton>
+              </Tooltip>
             )}
 
             {/* GitHub */}
-            <IconButton
-              color="secondary"
-              component="a"
-              href="https://github.com/Micxelo/arcaea-stickers"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub 仓库链接"
-              title="GitHub 仓库"
-            >
-              <GitHubIcon />
-            </IconButton>
+            <Tooltip title="GitHub 仓库">
+              <IconButton
+                color="secondary"
+                component="a"
+                href="https://github.com/Micxelo/arcaea-stickers"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub 仓库链接"
+                title="GitHub 仓库"
+              >
+                <GitHubIcon />
+              </IconButton>
+            </Tooltip>
 
             {/* 快捷键帮助 */}
             <Tooltip title="快捷键帮助">
@@ -760,14 +768,16 @@ function App() {
             </Tooltip>
 
             {/* 关于 */}
-            <IconButton
-              color="secondary"
-              onClick={() => setInfoOpen(true)}
-              aria-label="关于信息"
-              title="关于"
-            >
-              <InfoIcon />
-            </IconButton>
+            <Tooltip title="关于">
+              <IconButton
+                color="secondary"
+                onClick={() => setInfoOpen(true)}
+                aria-label="关于信息"
+                title="关于"
+              >
+                <InfoIcon />
+              </IconButton>
+            </Tooltip>
           </div>
         </div>
 
@@ -872,15 +882,17 @@ function App() {
                     aria-label="背景颜色选择器"
                     title="选择背景颜色"
                   />
-                  <IconButton
-                    size="small"
-                    color="secondary"
-                    onClick={() => setBgColor("#ffffff")}
-                    aria-label="重置背景颜色"
-                    title="重置背景色为白色"
-                  >
-                    <RefreshIcon fontSize="small" />
-                  </IconButton>
+                  <Tooltip title="重置背景颜色">
+                    <IconButton
+                      size="small"
+                      color="secondary"
+                      onClick={() => setBgColor("#ffffff")}
+                      aria-label="重置背景颜色"
+                      title="重置背景色为白色"
+                    >
+                      <RefreshIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </div>
               )}
             </div>
@@ -904,15 +916,17 @@ function App() {
                   color="secondary"
                   aria-label="调整旋转角度"
                 />
-                <IconButton
-                  size="small"
-                  color="secondary"
-                  onClick={() => setRotate(typedCharacters[character].defaultText.rotate)}
-                  aria-label="重置旋转角度"
-                  title="重置旋转角度"
-                >
-                  <RefreshIcon fontSize="small" />
-                </IconButton>
+                <Tooltip title="重置旋转角度">
+                  <IconButton
+                    size="small"
+                    color="secondary"
+                    onClick={() => setRotate(typedCharacters[character].defaultText.rotate)}
+                    aria-label="重置旋转角度"
+                    title="重置旋转角度"
+                  >
+                    <RefreshIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
               </div>
               <div>
                 <label>
@@ -929,15 +943,17 @@ function App() {
                   color="secondary"
                   aria-label="调整字体大小"
                 />
-                <IconButton
-                  size="small"
-                  color="secondary"
-                  onClick={() => setFontSize(typedCharacters[character].defaultText.size)}
-                  aria-label="重置字体大小"
-                  title="重置字体大小"
-                >
-                  <RefreshIcon fontSize="small" />
-                </IconButton>
+                <Tooltip title="重置字体大小">
+                  <IconButton
+                    size="small"
+                    color="secondary"
+                    onClick={() => setFontSize(typedCharacters[character].defaultText.size)}
+                    aria-label="重置字体大小"
+                    title="重置字体大小"
+                  >
+                    <RefreshIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
               </div>
               <div>
                 <label>
@@ -954,15 +970,17 @@ function App() {
                   color="secondary"
                   aria-label="调整行间距"
                 />
-                <IconButton
-                  size="small"
-                  color="secondary"
-                  onClick={() => setSpaceSize(18)}
-                  aria-label="重置行间距"
-                  title="重置行间距"
-                >
-                  <RefreshIcon fontSize="small" />
-                </IconButton>
+                <Tooltip title="重置行间距">
+                  <IconButton
+                    size="small"
+                    color="secondary"
+                    onClick={() => setSpaceSize(18)}
+                    aria-label="重置行间距"
+                    title="重置行间距"
+                  >
+                    <RefreshIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -1005,18 +1023,20 @@ function App() {
                     color="secondary"
                     aria-label="调整弧形半径"
                   />
-                  <IconButton
-                    size="small"
-                    color="secondary"
-                    onClick={() => {
-                      const defR = typedCharacters[character].defaultText.arcRadius;
-                      setArcRadius((defR !== undefined && defR > 0) ? defR : 200);
-                    }}
-                    aria-label="重置弧半径"
-                    title="重置弧半径"
-                  >
-                    <RefreshIcon fontSize="small" />
-                  </IconButton>
+                  <Tooltip title="重置弧形半径">
+                    <IconButton
+                      size="small"
+                      color="secondary"
+                      onClick={() => {
+                        const defR = typedCharacters[character].defaultText.arcRadius;
+                        setArcRadius((defR !== undefined && defR > 0) ? defR : 200);
+                      }}
+                      aria-label="重置弧半径"
+                      title="重置弧半径"
+                    >
+                      <RefreshIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </div>
               )}
 
@@ -1032,15 +1052,17 @@ function App() {
                     aria-label="文字颜色选择器"
                     title="选择文字颜色"
                   />
-                  <IconButton
-                    size="small"
-                    color="secondary"
-                    onClick={() => setTextColor(typedCharacters[character].color)}
-                    aria-label="重置文字颜色"
-                    title="重置为角色默认颜色"
-                  >
-                    <RefreshIcon fontSize="small" />
-                  </IconButton>
+                  <Tooltip title="重置文字颜色">
+                    <IconButton
+                      size="small"
+                      color="secondary"
+                      onClick={() => setTextColor(typedCharacters[character].color)}
+                      aria-label="重置文字颜色"
+                      title="重置为角色默认颜色"
+                    >
+                      <RefreshIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -1053,15 +1075,17 @@ function App() {
                     aria-label="描边颜色选择器"
                     title="选择描边颜色"
                   />
-                  <IconButton
-                    size="small"
-                    color="secondary"
-                    onClick={() => setStrokeColor(typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor)}
-                    aria-label="重置描边颜色"
-                    title="重置为角色默认描边颜色"
-                  >
-                    <RefreshIcon fontSize="small" />
-                  </IconButton>
+                  <Tooltip title="重置描边颜色">
+                    <IconButton
+                      size="small"
+                      color="secondary"
+                      onClick={() => setStrokeColor(typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor)}
+                      aria-label="重置描边颜色"
+                      title="重置为角色默认描边颜色"
+                    >
+                      <RefreshIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </div>
               </div>
 
@@ -1102,22 +1126,24 @@ function App() {
                       aria-label="附加颜色选择器"
                       title="选择附加文字颜色"
                     />
-                    <IconButton
-                      size="small"
-                      color="secondary"
-                      onClick={() => {
-                        const curr = typedCharacters[character];
-                        if (curr.extraColor && curr.extraStrokeColor) {
-                          setExtraColor(curr.extraColor);
-                        } else {
-                          setExtraColor(textColor);
-                        }
-                      }}
-                      aria-label="重置附加颜色"
-                      title="重置为默认值"
-                    >
-                      <RefreshIcon fontSize="small" />
-                    </IconButton>
+                    <Tooltip title="重置附加颜色">
+                      <IconButton
+                        size="small"
+                        color="secondary"
+                        onClick={() => {
+                          const curr = typedCharacters[character];
+                          if (curr.extraColor && curr.extraStrokeColor) {
+                            setExtraColor(curr.extraColor);
+                          } else {
+                            setExtraColor(textColor);
+                          }
+                        }}
+                        aria-label="重置附加颜色"
+                        title="重置为默认值"
+                      >
+                        <RefreshIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -1130,22 +1156,24 @@ function App() {
                       aria-label="附加描边颜色选择器"
                       title="选择附加描边颜色"
                     />
-                    <IconButton
-                      size="small"
-                      color="secondary"
-                      onClick={() => {
-                        const curr = typedCharacters[character];
-                        if (curr.extraColor && curr.extraStrokeColor) {
-                          setExtraStrokeColor(curr.extraStrokeColor);
-                        } else {
-                          setExtraStrokeColor(strokeColor);
-                        }
-                      }}
-                      aria-label="重置附加描边颜色"
-                      title="重置为默认值"
-                    >
-                      <RefreshIcon fontSize="small" />
-                    </IconButton>
+                    <Tooltip title="重置附加描边颜色">
+                      <IconButton
+                        size="small"
+                        color="secondary"
+                        onClick={() => {
+                          const curr = typedCharacters[character];
+                          if (curr.extraColor && curr.extraStrokeColor) {
+                            setExtraStrokeColor(curr.extraStrokeColor);
+                          } else {
+                            setExtraStrokeColor(strokeColor);
+                          }
+                        }}
+                        aria-label="重置附加描边颜色"
+                        title="重置为默认值"
+                      >
+                        <RefreshIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </div>
                 </div>
               )}
