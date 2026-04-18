@@ -8,6 +8,8 @@ import ShortcutsHelp from './components/ShortcutsHelp';
 import characters from "./characters.json";
 
 import { useState, useEffect, useRef } from "react";
+import LZString from "lz-string";
+
 import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -176,8 +178,8 @@ function App() {
   }, []);
 
   // 重置状态为当前角色的默认值
-  const resetAllState = () => {
-    const curr = typedCharacters[character];
+  const resetAllStateForCharacter = (charIndex: number) => {
+    const curr = typedCharacters[charIndex];
 
     setText(curr.defaultText.text);
     setText2(curr.defaultText.text2 || "");
@@ -211,13 +213,20 @@ function App() {
     }
 
     setSpaceSize(50);
+    setImgLoaded(false);
   }
+
+  const resetToCurrentCharacterDefault = () => {
+    resetAllStateForCharacter(character);
+  };
+
+  const handleCharacterChange = (newCharIndex: number) => {
+    setCharacter(newCharIndex);
+    resetAllStateForCharacter(newCharIndex);
+  };
 
   // 切换角色时重置状态
   useEffect(() => {
-    if (isUndoRedoRef.current)
-      return; // 撤销/恢复操作触发的角色切换不重置状态
-    resetAllState();
     setImgLoaded(false);
   }, [character]);
 
@@ -250,6 +259,24 @@ function App() {
     setExtraStrokeColor(state.extraStrokeColor);
   };
 
+  // 页面加载时从 URL 参数读取分享码并应用
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    if (code) {
+      try {
+        // 解压并解析分享码
+        const decompressed = LZString.decompressFromEncodedURIComponent(code);
+        if (decompressed) {
+          const state = JSON.parse(decompressed) as CanvasStateSnapshot;
+          applySnapshot(state);
+        }
+      } catch (error) {
+        console.error("解析分享码失败，使用默认配置", error);
+      }
+    }
+  }, []);
+
   // 监听状态变化，防抖 300ms 后推入历史记录
   useEffect(() => {
     if (isUndoRedoRef.current) {
@@ -274,6 +301,16 @@ function App() {
 
         return { list: newList, index: newList.length - 1 };
       });
+
+      // 将当前状态压缩并写入浏览器地址栏
+      try {
+        const jsonStr = JSON.stringify(currentState);
+        const compressed = LZString.compressToEncodedURIComponent(jsonStr);
+        const newUrl = `${window.location.origin}${window.location.pathname}?code=${compressed}`;
+        window.history.replaceState(null, '', newUrl);
+      } catch (error) {
+        console.error("生成分享码失败", error);
+      }
     }, 300);
 
     return () => clearTimeout(timer);
@@ -327,7 +364,7 @@ function App() {
       const shareData = {
         title: "Arcaea 贴纸",
         text: `这是我用 Arcaea 贴纸生成器 制作的 ${typedCharacters[character].name} 贴纸！`,
-        url: "https://arcst.micxelo.moe",
+        url: window.location.href,
         files: [file],
       };
 
@@ -640,7 +677,7 @@ function App() {
       // 重置 (Ctrl/Cmd + R)
       if (isCmdOrCtrl && e.key.toLowerCase() === 'r') {
         e.preventDefault();
-        resetAllState();
+        resetToCurrentCharacterDefault();
       }
 
       // 方向键调整位置 (步长 1，Shift 步长 5)
@@ -702,28 +739,30 @@ function App() {
           <div className="header-buttons">
             {/* 撤销 */}
             <Tooltip title="撤销">
-              <IconButton
-                color="secondary"
-                onClick={handleUndo}
-                disabled={historyData.index <= 0}
-                aria-label="撤销操作"
-                title="撤销"
-              >
-                <UndoIcon />
-              </IconButton>
+              <span>
+                <IconButton
+                  color="secondary"
+                  onClick={handleUndo}
+                  disabled={historyData.index <= 0}
+                  aria-label="撤销操作"
+                >
+                  <UndoIcon />
+                </IconButton>
+              </span>
             </Tooltip>
 
             {/* 恢复 */}
             <Tooltip title="恢复">
-              <IconButton
-                color="secondary"
-                onClick={handleRedo}
-                disabled={historyData.index >= historyData.list.length - 1}
-                aria-label="恢复操作"
-                title="恢复"
-              >
-                <RedoIcon />
-              </IconButton>
+              <span>
+                <IconButton
+                  color="secondary"
+                  onClick={handleRedo}
+                  disabled={historyData.index >= historyData.list.length - 1}
+                  aria-label="恢复操作"
+                >
+                  <RedoIcon />
+                </IconButton>
+              </span>
             </Tooltip>
 
             {/* 分享 */}
@@ -733,7 +772,6 @@ function App() {
                   color="secondary"
                   onClick={handleShare}
                   aria-label="分享贴纸"
-                  title="分享"
                 >
                   <ShareIcon />
                 </IconButton>
@@ -749,7 +787,6 @@ function App() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub 仓库链接"
-                title="GitHub 仓库"
               >
                 <GitHubIcon />
               </IconButton>
@@ -773,7 +810,6 @@ function App() {
                 color="secondary"
                 onClick={() => setInfoOpen(true)}
                 aria-label="关于信息"
-                title="关于"
               >
                 <InfoIcon />
               </IconButton>
@@ -795,7 +831,7 @@ function App() {
 
                 {/* 角色选择器 */}
                 <div style={{ position: "absolute", bottom: -45, right: -45, zIndex: 1 }}>
-                  <Picker setCharacter={setCharacter} />
+                  <Picker setCharacter={handleCharacterChange} />
                 </div>
               </div>
 
@@ -888,7 +924,6 @@ function App() {
                       color="secondary"
                       onClick={() => setBgColor("#ffffff")}
                       aria-label="重置背景颜色"
-                      title="重置背景色为白色"
                     >
                       <RefreshIcon fontSize="small" />
                     </IconButton>
@@ -922,7 +957,6 @@ function App() {
                     color="secondary"
                     onClick={() => setRotate(typedCharacters[character].defaultText.rotate)}
                     aria-label="重置旋转角度"
-                    title="重置旋转角度"
                   >
                     <RefreshIcon fontSize="small" />
                   </IconButton>
@@ -949,7 +983,6 @@ function App() {
                     color="secondary"
                     onClick={() => setFontSize(typedCharacters[character].defaultText.size)}
                     aria-label="重置字体大小"
-                    title="重置字体大小"
                   >
                     <RefreshIcon fontSize="small" />
                   </IconButton>
@@ -976,7 +1009,6 @@ function App() {
                     color="secondary"
                     onClick={() => setSpaceSize(18)}
                     aria-label="重置行间距"
-                    title="重置行间距"
                   >
                     <RefreshIcon fontSize="small" />
                   </IconButton>
@@ -1032,7 +1064,6 @@ function App() {
                         setArcRadius((defR !== undefined && defR > 0) ? defR : 200);
                       }}
                       aria-label="重置弧半径"
-                      title="重置弧半径"
                     >
                       <RefreshIcon fontSize="small" />
                     </IconButton>
@@ -1058,7 +1089,6 @@ function App() {
                       color="secondary"
                       onClick={() => setTextColor(typedCharacters[character].color)}
                       aria-label="重置文字颜色"
-                      title="重置为角色默认颜色"
                     >
                       <RefreshIcon fontSize="small" />
                     </IconButton>
@@ -1081,7 +1111,6 @@ function App() {
                       color="secondary"
                       onClick={() => setStrokeColor(typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor)}
                       aria-label="重置描边颜色"
-                      title="重置为角色默认描边颜色"
                     >
                       <RefreshIcon fontSize="small" />
                     </IconButton>
@@ -1139,7 +1168,6 @@ function App() {
                           }
                         }}
                         aria-label="重置附加颜色"
-                        title="重置为默认值"
                       >
                         <RefreshIcon fontSize="small" />
                       </IconButton>
@@ -1169,7 +1197,6 @@ function App() {
                           }
                         }}
                         aria-label="重置附加描边颜色"
-                        title="重置为默认值"
                       >
                         <RefreshIcon fontSize="small" />
                       </IconButton>
