@@ -10,6 +10,8 @@ import characters from "./characters.json";
 import { useState, useEffect, useRef } from "react";
 import LZString from "lz-string";
 
+import { useTheme } from "@mui/material/styles";
+
 import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -113,6 +115,8 @@ async function loadFont(family: string, url: string): Promise<boolean> {
 }
 
 function App() {
+  const theme = useTheme();
+
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
 
@@ -606,14 +610,6 @@ function App() {
     }
   };
 
-  const download = async () => {
-    const canvas = document.getElementsByTagName("canvas")[0];
-    const link = document.createElement("a");
-    link.download = `${typedCharacters[character].name}_${text.substring(0, 10)}_arcst.micxelo.moe.png`;
-    link.href = canvas.toDataURL();
-    link.click();
-  };
-
   function b64toBlob(b64Data: string, contentType: string | null = null, sliceSize: number | null = null) {
     contentType = contentType || "image/png";
     sliceSize = sliceSize || 512;
@@ -638,6 +634,14 @@ function App() {
         "image/png": b64toBlob(canvas.toDataURL().split(",")[1]),
       }),
     ]);
+  };
+
+  const download = async () => {
+    const canvas = document.getElementsByTagName("canvas")[0];
+    const link = document.createElement("a");
+    link.download = `${typedCharacters[character].name}_${text.substring(0, 10)}_arcst.micxelo.moe.png`;
+    link.href = canvas.toDataURL();
+    link.click();
   };
 
   // 全局快捷键监听

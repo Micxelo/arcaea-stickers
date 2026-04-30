@@ -8,6 +8,10 @@ SEKAI 贴纸工具那么多，难道 Arcaea 就没有吗？
 
 于是，我们制作了 Arcaea Stickers，一个专门为 Arcaea 玩家设计的贴纸生成工具，支持一键生成 Link Play 表情样式的贴纸，满足你在各类社交平台的分享需求！
 
+在 Arcaea Stickers 中，你可以选择喜欢的角色，输入自定义文字，生成独一无二的贴纸。无论是炫耀你的游戏成就，还是表达你的心情，都能轻松搞定！
+
+点击 [这里](https://arcst.micxelo.moe) 即刻体验 Arcaea Stickers，开始你的贴纸创作之旅吧！
+
 ## ✨ 功能
 
 - [x] 选取角色和自定义文字
@@ -16,7 +20,6 @@ SEKAI 贴纸工具那么多，难道 Arcaea 就没有吗？
 - [x] 更好的曲线文字支持
 - [x] 操作历史（撤销/重做）
 - [x] 在社交平台直接分享
-- [ ] 贴纸制作次数统计
 
 ## 🚀 快速开始
 
@@ -29,7 +32,7 @@ SEKAI 贴纸工具那么多，难道 Arcaea 就没有吗？
 git clone https://github.com/Micxelo/arcaea-stickers.git
 cd arcaea-stickers
 npm install
-npm run dev # 访问 localhost:3000 查看，支持热更新
+npm run dev # 访问 localhost:5173 预览开发版本
 
 npm run build # 构建生产版本
 ```
