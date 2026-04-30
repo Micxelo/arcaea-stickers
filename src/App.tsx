@@ -10,8 +10,6 @@ import characters from "./characters.json";
 import { useState, useEffect, useRef } from "react";
 import LZString from "lz-string";
 
-import { useTheme } from "@mui/material/styles";
-
 import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -115,8 +113,6 @@ async function loadFont(family: string, url: string): Promise<boolean> {
 }
 
 function App() {
-  const theme = useTheme();
-
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
 
@@ -126,8 +122,8 @@ function App() {
   const initialAutoSplit = typedCharacters[character].defaultText.text2 === undefined;
 
   const [text, setText] = useState(typedCharacters[character].defaultText.text);
-  const [text2, setText2] = useState<string>(initialText2);       // ⬅️ 新增
-  const [autoSplit, setAutoSplit] = useState<boolean>(initialAutoSplit); // ⬅️ 新增
+  const [text2, setText2] = useState<string>(initialText2);
+  const [autoSplit, setAutoSplit] = useState<boolean>(initialAutoSplit);
 
   const [fontSize, setFontSize] = useState<number>(typedCharacters[character].defaultText.size);
   const [spaceSize, setSpaceSize] = useState<number>(50);
@@ -392,9 +388,6 @@ function App() {
   };
 
   const draw = async (ctx: CanvasRenderingContext2D) => {
-    ctx.canvas.width = CANVAS_CONFIG.outputWidth;
-    ctx.canvas.height = CANVAS_CONFIG.outputHeight;
-
     if (!imgLoaded || !fontLoaded)
       return;
 
@@ -404,12 +397,16 @@ function App() {
       console.warn('字体加载失败，继续使用默认字体绘制', error);
     }
 
+    // 重置画布
+    ctx.canvas.width = CANVAS_CONFIG.outputWidth;
+    ctx.canvas.height = CANVAS_CONFIG.outputHeight;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
     var hRatio = ctx.canvas.width / img.width;
     var vRatio = ctx.canvas.height / img.height;
     var ratio = Math.min(hRatio, vRatio);
     var centerShift_x = (ctx.canvas.width - img.width * ratio) / 2;
     var centerShift_y = (ctx.canvas.height - img.height * ratio) / 2;
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     // 绘制背景颜色
     if (bgColorEnabled) {
@@ -606,8 +603,8 @@ function App() {
           k += spaceSize;
         }
       }
-      ctx.restore();
     }
+    ctx.restore();
   };
 
   function b64toBlob(b64Data: string, contentType: string | null = null, sliceSize: number | null = null) {
