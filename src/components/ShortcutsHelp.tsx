@@ -70,7 +70,7 @@ const shortcutsData: ShortcutItem[] = [
       { mods: ["Ctrl", "Shift"], key: "Z" },
     ],
   },
-  { desc: "重置当前角色默认值", combinations: [{ mods: ["Ctrl"], key: "R" }] },
+  { desc: "重置为当前角色默认值", combinations: [{ mods: ["Ctrl"], key: "R" }] },
   { desc: "微调文字位置 (1px)", combinations: [{ mods: [], key: "↑ ↓ ← →" }] },
   { desc: "移动文字位置 (5px)", combinations: [{ mods: ["Shift"], key: "↑ ↓ ← →" }] },
   { desc: "调整字号", combinations: [{ mods: [], key: "+ / -" }] },

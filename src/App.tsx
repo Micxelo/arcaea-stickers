@@ -116,7 +116,7 @@ function App() {
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
 
-  const [character, setCharacter] = useState(2); // 默认角色（Hikari）
+  const [character, setCharacter] = useState(3); // 默认角色（Hikari）
 
   const initialText2 = typedCharacters[character].defaultText.text2 || "";
   const initialAutoSplit = typedCharacters[character].defaultText.text2 === undefined;
@@ -644,12 +644,30 @@ function App() {
   // 全局快捷键监听
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // 焦点在文本框时不触发快捷键
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+
+      // 打开快捷键帮助 (F1)
+      if (e.key === 'F1') {
+        e.preventDefault();
+        setShortcutsOpen(true);
+      }
+
+      // 打开关于信息 (F2)
+      if (e.key === 'F2') {
+        e.preventDefault();
+        setInfoOpen(true);
+      }
+
+      // 重置 (Ctrl/Cmd + R)
+      if (isCmdOrCtrl && e.key.toLowerCase() === 'r') {
+        e.preventDefault();
+        resetToCurrentCharacterDefault();
+      }
+
+      // 焦点在文本框时不触发以下快捷键
       const activeTag = document.activeElement?.tagName.toLowerCase();
       if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select')
         return;
-
-      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
 
       // 复制 (Ctrl/Cmd + C)
       if (isCmdOrCtrl && e.key.toLowerCase() === 'c') {
@@ -673,12 +691,6 @@ function App() {
       if (isCmdOrCtrl && ((e.key.toLowerCase() === 'z' && e.shiftKey) || e.key.toLowerCase() === 'y')) {
         e.preventDefault();
         handleRedo();
-      }
-
-      // 重置 (Ctrl/Cmd + R)
-      if (isCmdOrCtrl && e.key.toLowerCase() === 'r') {
-        e.preventDefault();
-        resetToCurrentCharacterDefault();
       }
 
       // 方向键调整位置 (步长 1，Shift 步长 5)
