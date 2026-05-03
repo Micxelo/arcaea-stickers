@@ -124,26 +124,7 @@ export default function Info({ open, handleClose}: InfoProps) {
                 </ListItemAvatar>
                 <ListItemText
                   primary="Modder4869"
-                  secondary="为代码提供帮助"
-                />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() =>
-                  (window.location.href =
-                    "https://www.reddit.com/r/ProjectSekai/comments/x1h4v1/after_an_ungodly_amount_of_time_i_finally_made/")
-                }
-                aria-label="打开 SherenPlaysGames 在 Reddit 上的帖子"
-              >
-                <ListItemAvatar>
-                  <Avatar
-                    alt="u/SherenPlaysGames 的 Reddit 头像"
-                    src="https://styles.redditmedia.com/t5_mygft/styles/profileIcon_n1kman41j5891.jpg"
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  primary="u/SherenPlaysGames"
-                  secondary="提供了原始的贴纸图像素材"
+                  secondary="为原项目代码提供帮助"
                 />
               </ListItem>
 

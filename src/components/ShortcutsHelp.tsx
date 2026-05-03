@@ -49,7 +49,7 @@ interface ShortcutsHelpProps {
   handleClose: () => void;
 }
 
-// 新的快捷键结构：一个描述对应多个组合键
+// 定义快捷键项的类型
 interface ShortcutItem {
   desc: string;
   combinations: {

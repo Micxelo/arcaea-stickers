@@ -1,13 +1,13 @@
 // main.tsx
 
+import "./index.css";
+import App from "./App";
+
 import React, {useMemo} from "react";
 import ReactDOM from "react-dom/client";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import useMediaQuery from '@mui/material/useMediaQuery';
-
-import "./index.css";
-import App from "./App";
 
 function Root() {
   // 监听系统是否处于深色模式

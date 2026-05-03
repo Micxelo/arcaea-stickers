@@ -32,14 +32,14 @@ SEKAI 贴纸工具那么多，难道 Arcaea 就没有吗？
 git clone https://github.com/Micxelo/arcaea-stickers.git
 cd arcaea-stickers
 npm install
-npm run dev # 访问 localhost:5173 预览开发版本
+npm run dev # 预览
 
 npm run build # 构建生产版本
 ```
 
 ## ❤️ 致谢
 
-- 原始贴纸素材来自 [かなめなか](https://www.pixiv.net/users/28246124) 様
+- 原始贴纸素材来自 [かなめなか](https://www.pixiv.net/users/28246124) 和 Xestarrrr 。
 - [TheOriginalAyaka/sekai-stickers](https://github.com/TheOriginalAyaka/sekai-stickers) 的原始实现
 
 感谢所有原项目的贡献者，以及社区中所有支持和反馈的玩家！
