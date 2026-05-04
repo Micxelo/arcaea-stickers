@@ -2,6 +2,7 @@
 // 显示快捷键帮助的对话框组件
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from 'react-i18next';
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -58,32 +59,33 @@ interface ShortcutItem {
   }[];
 }
 
-// 快捷键数据定义
-const shortcutsData: ShortcutItem[] = [
-  { desc: "复制贴纸", combinations: [{ mods: ["Ctrl"], key: "C" }] },
-  { desc: "下载贴纸", combinations: [{ mods: ["Ctrl"], key: "S" }] },
-  { desc: "撤销", combinations: [{ mods: ["Ctrl"], key: "Z" }] },
-  {
-    desc: "恢复",
-    combinations: [
-      { mods: ["Ctrl"], key: "Y" },
-      { mods: ["Ctrl", "Shift"], key: "Z" },
-    ],
-  },
-  { desc: "重置为当前角色默认值", combinations: [{ mods: ["Ctrl"], key: "R" }] },
-  { desc: "微调文字位置 (1px)", combinations: [{ mods: [], key: "↑ ↓ ← →" }] },
-  { desc: "移动文字位置 (5px)", combinations: [{ mods: ["Shift"], key: "↑ ↓ ← →" }] },
-  { desc: "调整字号", combinations: [{ mods: [], key: "+ / -" }] },
-  { desc: "旋转文字", combinations: [{ mods: [], key: "[ / ]" }] },
-];
-
 export default function ShortcutsHelp({ open, handleClose }: ShortcutsHelpProps) {
+  const { t } = useTranslation();
   const [isMac, setIsMac] = useState(false);
 
   useEffect(() => {
     const platform = window.navigator.userAgent.toLowerCase();
     setIsMac(platform.includes("mac"));
   }, []);
+
+  // 快捷键数据定义
+  const shortcutsData: ShortcutItem[] = [
+    { desc: t('shortcutsHelp.shortcuts.copy'), combinations: [{ mods: ["Ctrl"], key: "C" }] },
+    { desc: t('shortcutsHelp.shortcuts.download'), combinations: [{ mods: ["Ctrl"], key: "S" }] },
+    { desc: t('shortcutsHelp.shortcuts.undo'), combinations: [{ mods: ["Ctrl"], key: "Z" }] },
+    {
+      desc: t('shortcutsHelp.shortcuts.redo'),
+      combinations: [
+        { mods: ["Ctrl"], key: "Y" },
+        { mods: ["Ctrl", "Shift"], key: "Z" },
+      ],
+    },
+    { desc: t('shortcutsHelp.shortcuts.reset'), combinations: [{ mods: ["Ctrl"], key: "R" }] },
+    { desc: t('shortcutsHelp.shortcuts.move1px'), combinations: [{ mods: [], key: "↑ ↓ ← →" }] },
+    { desc: t('shortcutsHelp.shortcuts.move5px'), combinations: [{ mods: ["Shift"], key: "↑ ↓ ← →" }] },
+    { desc: t('shortcutsHelp.shortcuts.fontSize'), combinations: [{ mods: [], key: "+ / -" }] },
+    { desc: t('shortcutsHelp.shortcuts.rotate'), combinations: [{ mods: [], key: "[ / ]" }] },
+  ];
 
   // 格式化修饰键
   const formatMod = (m: string) => {
@@ -105,19 +107,19 @@ export default function ShortcutsHelp({ open, handleClose }: ShortcutsHelpProps)
     </Box>
   );
 
-	// 渲染快捷键行
-	const renderShortcutRow = (item: ShortcutItem) => {
-	const combos = item.combinations.map((combo, idx) => (
-		<Box key={idx} sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
-		{renderCombination(combo)}
-		</Box>
-	));
-	return (
-		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>  {/* gap 控制垂直间距 */}
-		{combos}
-		</Box>
-	);
-	};
+  // 渲染快捷键行
+  const renderShortcutRow = (item: ShortcutItem) => {
+    const combos = item.combinations.map((combo, idx) => (
+      <Box key={idx} sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+        {renderCombination(combo)}
+      </Box>
+    ));
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>  {/* gap 控制垂直间距 */}
+        {combos}
+      </Box>
+    );
+  };
 
   return (
     <Dialog
@@ -131,7 +133,7 @@ export default function ShortcutsHelp({ open, handleClose }: ShortcutsHelpProps)
         },
       }}
     >
-      <DialogTitle>键盘快捷键</DialogTitle>
+      <DialogTitle>{t('shortcutsHelp.dialog.title')}</DialogTitle>
       <DialogContent>
         <TableContainer component={Paper} elevation={0}>
           <Table size="small">
@@ -149,8 +151,8 @@ export default function ShortcutsHelp({ open, handleClose }: ShortcutsHelpProps)
         </TableContainer>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary" autoFocus aria-label="关闭快捷键帮助">
-          关闭
+        <Button onClick={handleClose} color="primary" autoFocus aria-label={t('shortcutsHelp.closeButton.ariaLabel')}>
+          {t('shortcutsHelp.closeButton.text')}
         </Button>
       </DialogActions>
     </Dialog>

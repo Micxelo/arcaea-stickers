@@ -13,6 +13,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
+import { Trans, useTranslation } from 'react-i18next';
 
 // 定义 Props 类型
 interface InfoProps {
@@ -21,6 +22,8 @@ interface InfoProps {
 }
 
 export default function Info({ open, handleClose}: InfoProps) {
+  const { t } = useTranslation();
+
   return (
     <div>
       <Dialog
@@ -34,97 +37,97 @@ export default function Info({ open, handleClose}: InfoProps) {
             },
           }}
       >
-        <DialogTitle id="alert-dialog-title">关于 & 致谢</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{t('info.dialog.title')}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             <Typography variant="h6" component="h3">
-              本项目
+              {t('info.sections.project')}
             </Typography>
             <List>
               <ListItem
                 button
                 onClick={() => (window.location.href="https://github.com/Micxelo/arcaea-stickers")}
-                aria-label="打开本项目的 GitHub 页面"
+                aria-label={t('info.items.projectRepo.ariaLabel')}
               >
                 <ListItemAvatar>
                   <Avatar
-                    alt="GitHub 仓库图标"
+                    alt={t('info.items.projectRepo.avatarAlt')}
                     src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
                   />
                 </ListItemAvatar>
-                <ListItemText primary="arcaea-stickers" secondary="Micxelo/arcaea-stickers" />
+                <ListItemText primary={t('info.items.projectRepo.primary')} secondary={t('info.items.projectRepo.secondary')} />
               </ListItem>
               <ListItem
                 button
                 onClick={() => (window.location.href="https://github.com/Micxelo")}
-                aria-label="打开项目开发者的 GitHub 页面"
+                aria-label={t('info.items.developer.ariaLabel')}
               >
                 <ListItemAvatar>
                   <Avatar
-                    alt="Micxelo 的 GitHub 头像"
+                    alt={t('info.items.developer.avatarAlt')}
                     src="https://avatars.githubusercontent.com/Micxelo"
                   />
                 </ListItemAvatar>
                 <ListItemText
-                  primary="Micxelo"
-                  secondary="项目开发者"
+                  primary={t('info.items.developer.primary')}
+                  secondary={t('info.items.developer.secondary')}
                 />
               </ListItem>
             </List>
 
             <Typography variant="h6" component="h3">
-              本项目基于以下项目修改而来
+              {t('info.sections.basedOn')}
             </Typography>
             <List>
               <ListItem
                 button
                 onClick={() => (window.location.href="https://github.com/TheOriginalAyaka/sekai-stickers")}
-                aria-label="打开原项目的 GitHub 页面"
+                aria-label={t('info.items.originalRepo.ariaLabel')}
               >
                 <ListItemAvatar>
                   <Avatar
-                    alt="GitHub 仓库图标"
+                    alt={t('info.items.originalRepo.avatarAlt')}
                     src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
                   />
                 </ListItemAvatar>
-                <ListItemText primary="sekai-stickers" secondary="TheOriginalAyaka/sekai-stickers" />
+                <ListItemText primary={t('info.items.originalRepo.primary')} secondary={t('info.items.originalRepo.secondary')} />
               </ListItem>
             </List>
 
             <Typography variant="h6" component="h3">
-              致谢
+              {t('info.sections.thanks')}
             </Typography>
             <List>
               <ListItem
                 button
                 onClick={() => (window.location.href="https://github.com/theoriginalayaka")}
-                aria-label="打开 Ayaka 的 GitHub 页面"
+                aria-label={t('info.items.ayaka.ariaLabel')}
               >
                 <ListItemAvatar>
                   <Avatar
-                    alt="Ayaka 的 GitHub 头像"
+                    alt={t('info.items.ayaka.avatarAlt')}
                     src="https://avatars.githubusercontent.com/theoriginalayaka"
                   />
                 </ListItemAvatar>
                 <ListItemText
-                  primary="Ayaka"
-                  secondary="原项目的作者，提供了原始的想法和代码"
+                  primary={t('info.items.ayaka.primary')}
+                  secondary={t('info.items.ayaka.secondary')}
                 />
               </ListItem>
               <ListItem
                 button
                 onClick={() => (window.location.href="https://github.com/modder4869")}
-                aria-label="打开 Modder4869 的 GitHub 页面"
+                aria-label={t('info.items.modder4869.ariaLabel')}
               >
                 <ListItemAvatar>
                   <Avatar
-                    alt="Modder4869 的 GitHub 头像"
+                    alt={t('info.items.modder4869.avatarAlt')}
                     src="https://avatars.githubusercontent.com/modder4869"
                   />
                 </ListItemAvatar>
                 <ListItemText
-                  primary="Modder4869"
-                  secondary="为原项目代码提供帮助"
+                  primary={t('info.items.modder4869.primary')}
+                  secondary={t('info.items.modder4869.secondary')}
                 />
               </ListItem>
 
@@ -134,31 +137,29 @@ export default function Info({ open, handleClose}: InfoProps) {
                   (window.location.href =
                     "https://github.com/TheOriginalAyaka/sekai-stickers/graphs/contributors")
                 }
-                aria-label="打开原项目的贡献者列表页面"
+                aria-label={t('info.items.allContributors.ariaLabel')}
               >
                 <ListItemAvatar>
                   <Avatar
-                    alt="原项目的贡献者列表图标"
+                    alt={t('info.items.allContributors.avatarAlt')}
                     src="https://avatars.githubusercontent.com/in/29110"
                   />
                 </ListItemAvatar>
                 <ListItemText
-                  primary="所有贡献者"
-                  secondary="原项目的其他代码贡献者"
+                  primary={t('info.items.allContributors.primary')}
+                  secondary={t('info.items.allContributors.secondary')}
                 />
               </ListItem>
             </List>
 
             <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
-              贴纸图像素材版权归原始游戏权利人所有。<br />
-              本项目仅为粉丝创作，不用于商业用途。<br />
-              如需贡献新贴纸，欢迎通过 GitHub 提交 Issue 或 PR。
+              <Trans i18nKey="info.copyright" components={{ br: <br /> }} />
             </Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary" autoFocus aria-label="关闭关于与致谢对话框">
-            关闭
+          <Button onClick={handleClose} color="secondary" autoFocus aria-label={t('info.closeButton.ariaLabel')}>
+            {t('info.closeButton.text')}
           </Button>
         </DialogActions>
       </Dialog>

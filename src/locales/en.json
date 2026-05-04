@@ -1,0 +1,214 @@
+{
+    "app": {
+        "title": "Arcaea Sticker Generator",
+        "header": {
+            "tooltip": {
+                "undo": "Undo",
+                "redo": "Redo",
+                "share": "Share Sticker",
+                "github": "GitHub Repository",
+                "shortcuts": "Keyboard Shortcuts Help",
+                "info": "About"
+            },
+            "ariaLabel": {
+                "undo": "Undo action",
+                "redo": "Redo action",
+                "share": "Share sticker",
+                "github": "GitHub repository link",
+                "shortcuts": "Open keyboard shortcuts help",
+                "info": "About"
+            }
+        },
+        "canvas": {
+            "ariaLabel": "{character} sticker preview",
+            "verticalSlider": {
+                "ariaLabel": "Adjust text vertical position"
+            },
+            "horizontalSlider": {
+                "ariaLabel": "Adjust text horizontal position"
+            },
+            "textField": {
+                "defaultLabel": "Text content",
+                "leftLabel": "Left text",
+                "rightLabel": "Right text"
+            },
+            "background": {
+                "label": "Background color",
+                "switchAriaLabel": "Background color toggle",
+                "colorPickerAriaLabel": "Background color picker",
+                "colorPickerTitle": "Choose background color",
+                "resetTooltip": "Reset background color",
+                "resetAriaLabel": "Reset background color"
+            }
+        },
+        "settings": {
+            "rotate": {
+                "label": "Rotation angle",
+                "sliderAriaLabel": "Adjust rotation angle",
+                "resetTooltip": "Reset rotation angle",
+                "resetAriaLabel": "Reset rotation angle"
+            },
+            "fontSize": {
+                "label": "Font size",
+                "sliderAriaLabel": "Adjust font size",
+                "resetTooltip": "Reset font size",
+                "resetAriaLabel": "Reset font size"
+            },
+            "lineSpacing": {
+                "label": "Line spacing",
+                "sliderAriaLabel": "Adjust line spacing",
+                "resetTooltip": "Reset line spacing",
+                "resetAriaLabel": "Reset line spacing"
+            },
+            "curve": {
+                "label": "Curved text",
+                "switchAriaLabel": "Curved text toggle",
+                "convex": {
+                    "label": "Convex upward",
+                    "switchAriaLabel": "Curve direction toggle"
+                },
+                "radius": {
+                    "label": "Radius",
+                    "sliderAriaLabel": "Adjust curve radius",
+                    "resetTooltip": "Reset curve radius",
+                    "resetAriaLabel": "Reset curve radius"
+                }
+            },
+            "textColor": {
+                "label": "Text color",
+                "pickerAriaLabel": "Text color picker",
+                "pickerTitle": "Choose text color",
+                "resetTooltip": "Reset text color",
+                "resetAriaLabel": "Reset text color"
+            },
+            "strokeColor": {
+                "label": "Stroke color",
+                "pickerAriaLabel": "Stroke color picker",
+                "pickerTitle": "Choose stroke color",
+                "resetTooltip": "Reset stroke color",
+                "resetAriaLabel": "Reset stroke color"
+            },
+            "extraColor": {
+                "label": "Dual color",
+                "switchAriaLabel": "Dual color toggle",
+                "autoSplit": {
+                    "label": "Auto split",
+                    "switchAriaLabel": "Auto split toggle"
+                },
+                "color": {
+                    "label": "Extra color",
+                    "pickerAriaLabel": "Extra text color picker",
+                    "pickerTitle": "Choose extra text color",
+                    "resetTooltip": "Reset extra color",
+                    "resetAriaLabel": "Reset extra color"
+                },
+                "stroke": {
+                    "label": "Extra stroke",
+                    "pickerAriaLabel": "Extra stroke color picker",
+                    "pickerTitle": "Choose extra stroke color",
+                    "resetTooltip": "Reset extra stroke color",
+                    "resetAriaLabel": "Reset extra stroke color"
+                }
+            }
+        },
+        "buttons": {
+            "copy": "Copy",
+            "download": "Download",
+            "copyAriaLabel": "Copy sticker to clipboard",
+            "downloadAriaLabel": "Download sticker"
+        },
+        "share": {
+            "title": "Arcaea Sticker",
+            "text": "I made this {character} sticker with the Arcaea Sticker Generator!",
+            "unsupported": "Your browser does not support direct image sharing. Please use the download or copy functions instead."
+        }
+    },
+    "picker": {
+        "openButton": {
+            "ariaLabel": "Open character picker",
+            "title": "Select character"
+        },
+        "search": {
+            "label": "Search characters",
+            "ariaLabel": "Search characters"
+        },
+        "noResults": "No matching characters found",
+        "characterItem": {
+            "ariaLabel": "Select character {name} {character}",
+            "imgAlt": "{name} {character}"
+        }
+    },
+    "info": {
+        "dialog": {
+            "title": "About & Credits"
+        },
+        "sections": {
+            "project": "This project",
+            "basedOn": "Original project",
+            "thanks": "Acknowledgments"
+        },
+        "items": {
+            "projectRepo": {
+                "primary": "arcaea-stickers",
+                "secondary": "Micxelo/arcaea-stickers",
+                "ariaLabel": "Open this project's GitHub page",
+                "avatarAlt": "GitHub repository icon"
+            },
+            "developer": {
+                "primary": "Micxelo",
+                "secondary": "Project developer",
+                "ariaLabel": "Open the project developer's GitHub page",
+                "avatarAlt": "Micxelo's GitHub avatar"
+            },
+            "originalRepo": {
+                "primary": "sekai-stickers",
+                "secondary": "TheOriginalAyaka/sekai-stickers",
+                "ariaLabel": "Open the original project's GitHub page",
+                "avatarAlt": "GitHub repository icon"
+            },
+            "ayaka": {
+                "primary": "Ayaka",
+                "secondary": "Original project author, provided the original idea and code",
+                "ariaLabel": "Open Ayaka's GitHub page",
+                "avatarAlt": "Ayaka's GitHub avatar"
+            },
+            "modder4869": {
+                "primary": "Modder4869",
+                "secondary": "Provided help with the original project code",
+                "ariaLabel": "Open Modder4869's GitHub page",
+                "avatarAlt": "Modder4869's GitHub avatar"
+            },
+            "allContributors": {
+                "primary": "All contributors",
+                "secondary": "Other code contributors to the original project",
+                "ariaLabel": "Open the original project's contributors list page",
+                "avatarAlt": "Original project contributors list icon"
+            }
+        },
+        "copyright": "Sticker image assets are copyrighted by the original game rights holders.<br />This project is a fan creation and not for commercial use.<br />To contribute new stickers, please submit an Issue or PR via GitHub.",
+        "closeButton": {
+            "text": "Close",
+            "ariaLabel": "Close About & Credits dialog"
+        }
+    },
+    "shortcutsHelp": {
+        "dialog": {
+            "title": "Keyboard Shortcuts"
+        },
+        "closeButton": {
+            "text": "Close",
+            "ariaLabel": "Close shortcuts help"
+        },
+        "shortcuts": {
+            "copy": "Copy sticker",
+            "download": "Download sticker",
+            "undo": "Undo",
+            "redo": "Redo",
+            "reset": "Reset to current character defaults",
+            "move1px": "Nudge text position (1px)",
+            "move5px": "Move text position (5px)",
+            "fontSize": "Adjust font size",
+            "rotate": "Rotate text"
+        }
+    }
+}

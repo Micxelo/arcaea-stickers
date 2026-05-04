@@ -6,9 +6,11 @@ import Picker from "./components/Picker";
 import Info from "./components/Info";
 import ShortcutsHelp from './components/ShortcutsHelp';
 import characters from "./characters.json";
+import { interpolate } from "./i18n";
 
 import { useState, useEffect, useRef } from "react";
 import LZString from "lz-string";
+import { useTranslation } from 'react-i18next';
 
 import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
@@ -168,6 +170,9 @@ function App() {
   const isUndoRedoRef = useRef(false); // 标记当前的状态变化是否由“撤销/恢复”按钮引起的
 
   const img = new Image();
+
+  // i18n
+  const { t } = useTranslation();
 
   // 组件挂载时加载字体
   useEffect(() => {
@@ -362,8 +367,8 @@ function App() {
       const file = new File([blob], fileName, { type: "image/png" });
 
       const shareData = {
-        title: "Arcaea 贴纸",
-        text: `这是我用 Arcaea 贴纸生成器 制作的 ${typedCharacters[character].name} 贴纸！`,
+        title: t('app.share.title'),
+        text: interpolate(t('app.share.text'), { character: typedCharacters[character].name }),
         url: window.location.href,
         files: [file],
       };
@@ -377,7 +382,7 @@ function App() {
           console.log("分享操作已结束或取消:", error);
         }
       } else {
-        alert("您的浏览器不支持直接分享图片文件，请使用下载或复制功能。");
+        alert(t('app.share.unsupported'));
       }
     }, "image/png");
   };
@@ -747,17 +752,17 @@ function App() {
       <div className="app-wrapper">
         <div className="app-header">
           <div className="header-title">
-            <h1>Arcaea 贴纸生成器</h1>
+            <h1>{t('app.title')}</h1>
           </div>
           <div className="header-buttons">
             {/* 撤销 */}
-            <Tooltip title="撤销">
+            <Tooltip title={t('app.header.tooltip.undo')}>
               <span>
                 <IconButton
                   color="secondary"
                   onClick={handleUndo}
                   disabled={historyData.index <= 0}
-                  aria-label="撤销操作"
+                  aria-label={t('app.header.ariaLabel.undo')}
                 >
                   <UndoIcon />
                 </IconButton>
@@ -765,13 +770,13 @@ function App() {
             </Tooltip>
 
             {/* 恢复 */}
-            <Tooltip title="恢复">
+            <Tooltip title={t('app.header.tooltip.redo')}>
               <span>
                 <IconButton
                   color="secondary"
                   onClick={handleRedo}
                   disabled={historyData.index >= historyData.list.length - 1}
-                  aria-label="恢复操作"
+                  aria-label={t('app.header.ariaLabel.redo')}
                 >
                   <RedoIcon />
                 </IconButton>
@@ -780,11 +785,11 @@ function App() {
 
             {/* 分享 */}
             {typeof navigator !== "undefined" && typeof navigator.share === "function" && (
-              <Tooltip title="分享贴纸">
+              <Tooltip title={t('app.header.tooltip.share')}>
                 <IconButton
                   color="secondary"
                   onClick={handleShare}
-                  aria-label="分享贴纸"
+                  aria-label={t('app.header.ariaLabel.share')}
                 >
                   <ShareIcon />
                 </IconButton>
@@ -792,25 +797,25 @@ function App() {
             )}
 
             {/* GitHub */}
-            <Tooltip title="GitHub 仓库">
+            <Tooltip title={t('app.header.tooltip.github')}>
               <IconButton
                 color="secondary"
                 component="a"
                 href="https://github.com/Micxelo/arcaea-stickers"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="GitHub 仓库链接"
+                aria-label={t('app.header.ariaLabel.github')}
               >
                 <GitHubIcon />
               </IconButton>
             </Tooltip>
 
             {/* 快捷键帮助 */}
-            <Tooltip title="快捷键帮助">
+            <Tooltip title={t('app.header.tooltip.shortcuts')}>
               <IconButton
                 color="secondary"
                 onClick={() => setShortcutsOpen(true)}
-                aria-label="打开快捷键帮助"
+                aria-label={t('app.header.ariaLabel.shortcuts')}
                 sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
               >
                 <KeyboardIcon />
@@ -818,11 +823,11 @@ function App() {
             </Tooltip>
 
             {/* 关于 */}
-            <Tooltip title="关于">
+            <Tooltip title={t('app.header.tooltip.info')}>
               <IconButton
                 color="secondary"
                 onClick={() => setInfoOpen(true)}
-                aria-label="关于信息"
+                aria-label={t('app.header.ariaLabel.info')}
               >
                 <InfoIcon />
               </IconButton>
@@ -837,7 +842,7 @@ function App() {
                 <div
                   className="canvas"
                   role="img"
-                  aria-label={`${typedCharacters[character].name} 贴纸预览`}
+                  aria-label={interpolate(t('app.canvas.ariaLabel'), { character: typedCharacters[character].name })}
                 >
                   <Canvas draw={draw} />
                 </div>
@@ -863,7 +868,7 @@ function App() {
                 orientation="vertical"
                 track={false}
                 color="secondary"
-                aria-label="调整文字垂直位置"
+                aria-label={t('app.canvas.verticalSlider.ariaLabel')}
               />
             </div>
 
@@ -878,14 +883,14 @@ function App() {
                 step={1}
                 track={false}
                 color="secondary"
-                aria-label="调整文字水平位置"
+                aria-label={t('app.canvas.horizontalSlider.ariaLabel')}
               />
             </div>
 
             <div className="text">
               {/* 默认文本框 */}
               <TextField
-                label={extraColorEnabled && !autoSplit ? "左侧文字" : "文字内容"}
+                label={t(extraColorEnabled && !autoSplit ? 'app.canvas.textField.leftLabel' : 'app.canvas.textField.defaultLabel')}
                 size="small"
                 color="secondary"
                 value={text}
@@ -898,7 +903,7 @@ function App() {
               {/* 右侧文字框 */}
               {extraColorEnabled && !autoSplit && (
                 <TextField
-                  label="右侧文字"
+                  label={t('app.canvas.textField.rightLabel')}
                   size="small"
                   color="secondary"
                   value={text2}
@@ -913,12 +918,12 @@ function App() {
             {/* 背景颜色开关与选择器 */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <label>背景颜色</label>
+                <label>{t('app.canvas.background.label')}</label>
                 <Switch
                   checked={bgColorEnabled}
                   onChange={(e) => setBgColorEnabled(e.target.checked)}
                   color="secondary"
-                  aria-label="背景颜色开关"
+                  aria-label={t('app.canvas.background.switchAriaLabel')}
                 />
               </div>
               {bgColorEnabled && (
@@ -928,15 +933,15 @@ function App() {
                     className="color-picker-input"
                     value={bgColor}
                     onChange={(e) => setBgColor(e.target.value)}
-                    aria-label="背景颜色选择器"
-                    title="选择背景颜色"
+                    aria-label={t('app.canvas.background.colorPickerAriaLabel')}
+                    title={t('app.canvas.background.colorPickerTitle')}
                   />
-                  <Tooltip title="重置背景颜色">
+                  <Tooltip title={t('app.canvas.background.resetTooltip')}>
                     <IconButton
                       size="small"
                       color="secondary"
                       onClick={() => setBgColor("#ffffff")}
-                      aria-label="重置背景颜色"
+                      aria-label={t('app.canvas.background.resetAriaLabel')}
                     >
                       <RefreshIcon fontSize="small" />
                     </IconButton>
@@ -950,9 +955,7 @@ function App() {
           <div className="settings-area">
             <div className="settings">
               <div>
-                <label>
-                  <span style={{ whiteSpace: 'nowrap' }}>旋转角度</span>
-                </label>
+                <label>{t('app.settings.rotate.label')}</label>
                 <Slider
                   value={rotate}
                   onChange={(_, v) => setRotate(v as number)}
@@ -962,23 +965,21 @@ function App() {
                   step={0.2}
                   track={false}
                   color="secondary"
-                  aria-label="调整旋转角度"
+                  aria-label={t('app.settings.rotate.sliderAriaLabel')}
                 />
-                <Tooltip title="重置旋转角度">
+                <Tooltip title={t('app.settings.rotate.resetTooltip')}>
                   <IconButton
                     size="small"
                     color="secondary"
                     onClick={() => setRotate(typedCharacters[character].defaultText.rotate)}
-                    aria-label="重置旋转角度"
+                    aria-label={t('app.settings.rotate.resetAriaLabel')}
                   >
                     <RefreshIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
               </div>
               <div>
-                <label>
-                  <span style={{ whiteSpace: 'nowrap' }}>字体大小</span>
-                </label>
+                <label>{t('app.settings.fontSize.label')}</label>
                 <Slider
                   value={fontSize}
                   onChange={(_, v) => setFontSize(v as number)}
@@ -988,23 +989,21 @@ function App() {
                   step={1}
                   track={false}
                   color="secondary"
-                  aria-label="调整字体大小"
+                  aria-label={t('app.settings.fontSize.sliderAriaLabel')}
                 />
-                <Tooltip title="重置字体大小">
+                <Tooltip title={t('app.settings.fontSize.resetTooltip')}>
                   <IconButton
                     size="small"
                     color="secondary"
                     onClick={() => setFontSize(typedCharacters[character].defaultText.size)}
-                    aria-label="重置字体大小"
+                    aria-label={t('app.settings.fontSize.resetAriaLabel')}
                   >
                     <RefreshIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
               </div>
               <div>
-                <label>
-                  <span style={{ whiteSpace: 'nowrap' }}>行间距</span>
-                </label>
+                <label>{t('app.settings.lineSpacing.label')}</label>
                 <Slider
                   value={spaceSize}
                   onChange={(_, v) => setSpaceSize(v as number)}
@@ -1014,14 +1013,14 @@ function App() {
                   step={1}
                   track={false}
                   color="secondary"
-                  aria-label="调整行间距"
+                  aria-label={t('app.settings.lineSpacing.sliderAriaLabel')}
                 />
-                <Tooltip title="重置行间距">
+                <Tooltip title={t('app.settings.lineSpacing.resetTooltip')}>
                   <IconButton
                     size="small"
                     color="secondary"
                     onClick={() => setSpaceSize(18)}
-                    aria-label="重置行间距"
+                    aria-label={t('app.settings.lineSpacing.resetAriaLabel')}
                   >
                     <RefreshIcon fontSize="small" />
                   </IconButton>
@@ -1030,22 +1029,22 @@ function App() {
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <label>弧形文字</label>
+                  <label>{t('app.settings.curve.label')}</label>
                   <Switch
                     checked={curve}
                     onChange={(e) => setCurve(e.target.checked)}
                     color="secondary"
-                    aria-label="弧形文字开关"
+                    aria-label={t('app.settings.curve.switchAriaLabel')}
                   />
                 </div>
                 {curve && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <label style={{ whiteSpace: 'nowrap' }}>上凸</label>
+                    <label>{t('app.settings.curve.convex.label')}</label>
                     <Switch
                       checked={convex}
                       onChange={(e) => setConvex(e.target.checked)}
                       color="secondary"
-                      aria-label="凹凸方向开关"
+                      aria-label={t('app.settings.curve.convex.switchAriaLabel')}
                     />
                   </div>
                 )}
@@ -1054,9 +1053,7 @@ function App() {
               {/* 弧形半径 */}
               {curve && (
                 <div>
-                  <label>
-                    <span style={{ whiteSpace: 'nowrap' }}>半径</span>
-                  </label>
+                  <label>{t('app.settings.curve.radius.label')}</label>
                   <Slider
                     value={arcRadius}
                     onChange={(_, v) => setArcRadius(v as number)}
@@ -1066,9 +1063,9 @@ function App() {
                     step={5}
                     track={false}
                     color="secondary"
-                    aria-label="调整弧形半径"
+                    aria-label={t('app.settings.curve.radius.sliderAriaLabel')}
                   />
-                  <Tooltip title="重置弧形半径">
+                  <Tooltip title={t('app.settings.curve.radius.resetTooltip')}>
                     <IconButton
                       size="small"
                       color="secondary"
@@ -1076,7 +1073,7 @@ function App() {
                         const defR = typedCharacters[character].defaultText.arcRadius;
                         setArcRadius((defR !== undefined && defR > 0) ? defR : 200);
                       }}
-                      aria-label="重置弧半径"
+                      aria-label={t('app.settings.curve.radius.resetAriaLabel')}
                     >
                       <RefreshIcon fontSize="small" />
                     </IconButton>
@@ -1087,21 +1084,21 @@ function App() {
               {/* 颜色选取器 */}
               <div style={{ justifyContent: 'space-between', gap: '1rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <label style={{ minWidth: 'auto', whiteSpace: 'nowrap' }}>文字颜色</label>
+                  <label>{t('app.settings.textColor.label')}</label>
                   <input
                     type="color"
                     className="color-picker-input"
                     value={textColor}
                     onChange={(e) => setTextColor(e.target.value)}
-                    aria-label="文字颜色选择器"
-                    title="选择文字颜色"
+                    aria-label={t('app.settings.textColor.pickerAriaLabel')}
+                    title={t('app.settings.textColor.pickerTitle')}
                   />
-                  <Tooltip title="重置文字颜色">
+                  <Tooltip title={t('app.settings.textColor.resetTooltip')}>
                     <IconButton
                       size="small"
                       color="secondary"
                       onClick={() => setTextColor(typedCharacters[character].color)}
-                      aria-label="重置文字颜色"
+                      aria-label={t('app.settings.textColor.resetAriaLabel')}
                     >
                       <RefreshIcon fontSize="small" />
                     </IconButton>
@@ -1109,21 +1106,21 @@ function App() {
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <label style={{ minWidth: 'auto', whiteSpace: 'nowrap' }}>描边颜色</label>
+                  <label>{t('app.settings.strokeColor.label')}</label>
                   <input
                     type="color"
                     className="color-picker-input"
                     value={strokeColor}
                     onChange={(e) => setStrokeColor(e.target.value)}
-                    aria-label="描边颜色选择器"
-                    title="选择描边颜色"
+                    aria-label={t('app.settings.strokeColor.pickerAriaLabel')}
+                    title={t('app.settings.strokeColor.pickerTitle')}
                   />
-                  <Tooltip title="重置描边颜色">
+                  <Tooltip title={t('app.settings.strokeColor.resetTooltip')}>
                     <IconButton
                       size="small"
                       color="secondary"
                       onClick={() => setStrokeColor(typedCharacters[character].strokeColor || STROKE_CONFIG.defaultColor)}
-                      aria-label="重置描边颜色"
+                      aria-label={t('app.settings.strokeColor.resetAriaLabel')}
                     >
                       <RefreshIcon fontSize="small" />
                     </IconButton>
@@ -1134,22 +1131,22 @@ function App() {
               {/* 分色绘制与自动分割开关 */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <label>分色绘制</label>
+                  <label>{t('app.settings.extraColor.label')}</label>
                   <Switch
                     checked={extraColorEnabled}
                     onChange={(e) => setExtraColorEnabled(e.target.checked)}
                     color="secondary"
-                    aria-label="分色绘制开关"
+                    aria-label={t('app.settings.extraColor.switchAriaLabel')}
                   />
                 </div>
                 {extraColorEnabled && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <label style={{ whiteSpace: 'nowrap' }}>自动分割</label>
+                    <label>{t('app.settings.extraColor.autoSplit.label')}</label>
                     <Switch
                       checked={autoSplit}
                       onChange={(e) => setAutoSplit(e.target.checked)}
                       color="secondary"
-                      aria-label="自动分割开关"
+                      aria-label={t('app.settings.extraColor.autoSplit.switchAriaLabel')}
                     />
                   </div>
                 )}
@@ -1159,16 +1156,16 @@ function App() {
               {extraColorEnabled && (
                 <div style={{ justifyContent: 'space-between', gap: '1rem', marginTop: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <label style={{ minWidth: 'auto', whiteSpace: 'nowrap' }}>附加颜色</label>
+                    <label>{t('app.settings.extraColor.color.label')}</label>
                     <input
                       type="color"
                       className="color-picker-input"
                       value={extraColor}
                       onChange={(e) => setExtraColor(e.target.value)}
-                      aria-label="附加颜色选择器"
-                      title="选择附加文字颜色"
+                      aria-label={t('app.settings.extraColor.color.pickerAriaLabel')}
+                      title={t('app.settings.extraColor.color.pickerTitle')}
                     />
-                    <Tooltip title="重置附加颜色">
+                    <Tooltip title={t('app.settings.extraColor.color.resetTooltip')}>
                       <IconButton
                         size="small"
                         color="secondary"
@@ -1180,7 +1177,7 @@ function App() {
                             setExtraColor(textColor);
                           }
                         }}
-                        aria-label="重置附加颜色"
+                        aria-label={t('app.settings.extraColor.color.resetAriaLabel')}
                       >
                         <RefreshIcon fontSize="small" />
                       </IconButton>
@@ -1188,16 +1185,16 @@ function App() {
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <label style={{ minWidth: 'auto', whiteSpace: 'nowrap' }}>附加描边</label>
+                    <label>{t('app.settings.extraColor.stroke.label')}</label>
                     <input
                       type="color"
                       className="color-picker-input"
                       value={extraStrokeColor}
                       onChange={(e) => setExtraStrokeColor(e.target.value)}
-                      aria-label="附加描边颜色选择器"
-                      title="选择附加描边颜色"
+                      aria-label={t('app.settings.extraColor.stroke.pickerAriaLabel')}
+                      title={t('app.settings.extraColor.stroke.pickerTitle')}
                     />
-                    <Tooltip title="重置附加描边颜色">
+                    <Tooltip title={t('app.settings.extraColor.stroke.resetTooltip')}>
                       <IconButton
                         size="small"
                         color="secondary"
@@ -1209,7 +1206,7 @@ function App() {
                             setExtraStrokeColor(strokeColor);
                           }
                         }}
-                        aria-label="重置附加描边颜色"
+                        aria-label={t('app.settings.extraColor.stroke.resetAriaLabel')}
                       >
                         <RefreshIcon fontSize="small" />
                       </IconButton>
@@ -1220,11 +1217,11 @@ function App() {
             </div>
 
             <div className="buttons">
-              <Button color="secondary" variant="contained" onClick={copy} aria-label="复制贴纸到剪贴板">
-                复制
+              <Button color="secondary" variant="contained" onClick={copy} aria-label={t('app.buttons.copyAriaLabel')}>
+                {t('app.buttons.copy')}
               </Button>
-              <Button color="secondary" variant="contained" onClick={download} aria-label="下载贴纸">
-                下载
+              <Button color="secondary" variant="contained" onClick={download} aria-label={t('app.buttons.downloadAriaLabel')}>
+                {t('app.buttons.download')}
               </Button>
             </div>
           </div>

@@ -13,7 +13,9 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState, useMemo } from "react";
+import { useTranslation } from 'react-i18next';
 import characters from "../characters.json";
+import { interpolate } from "../i18n";
 
 interface Character {
   id: string;
@@ -44,6 +46,8 @@ export default function Picker({ setCharacter }: PickerProps) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const { t } = useTranslation();
+
   const filteredItems = useMemo(() => {
     const s = search.toLowerCase().trim();
     return (characters as Character[]).map((c, index) => {
@@ -68,12 +72,12 @@ export default function Picker({ setCharacter }: PickerProps) {
           }}
           role="button"
           tabIndex={0}
-          aria-label={`选择角色 ${c.name} ${c.character}`}
+          aria-label={interpolate(t('picker.characterItem.ariaLabel'), { name: c.name, character: c.character })} 
         >
           <img
             src={`/img/${c.img}`}
             srcSet={`/img/${c.img}`}
-            alt={c.name + " " + c.character}
+            alt={interpolate(t('picker.characterItem.imgAlt'), { name: c.name, character: c.character })}
             loading="lazy"
             style={{
               width: "100%",
@@ -93,8 +97,8 @@ export default function Picker({ setCharacter }: PickerProps) {
       <IconButton
         color="secondary"
         onClick={handleOpen}
-        aria-label="打开角色选择器"
-        title="选择角色"
+        aria-label={t('picker.openButton.ariaLabel')}
+        title={t('picker.openButton.title')}
       >
         <SearchIcon />
       </IconButton>
@@ -120,14 +124,14 @@ export default function Picker({ setCharacter }: PickerProps) {
         <DialogContent dividers sx={{ p: 0, overflowX: "hidden" }}>
           <div className="picker-search" style={{ padding: "0.5rem" }}>
             <TextField
-              label="搜索角色"
+              label={t('picker.search.label')}
               size="small"
               color="secondary"
               value={search}
               fullWidth
               onChange={(e) => setSearch(e.target.value)}
               inputProps={{
-                "aria-label": "搜索角色",
+                "aria-label": t('picker.search.ariaLabel'),
                 "aria-describedby": "picker-search-helper-text",
               }}
             />
@@ -143,7 +147,7 @@ export default function Picker({ setCharacter }: PickerProps) {
                   justifyContent: 'center' 
                 }}
               >
-                <Typography color="textSecondary">未找到相关角色</Typography>
+                <Typography color="textSecondary">{t('picker.noResults')}</Typography>
               </Box>
             ) : (
               <ImageList

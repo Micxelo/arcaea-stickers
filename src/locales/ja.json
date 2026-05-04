@@ -1,0 +1,214 @@
+{
+    "app": {
+        "title": "Arcaea ステッカージェネレーター",
+        "header": {
+            "tooltip": {
+                "undo": "元に戻す",
+                "redo": "やり直し",
+                "share": "ステッカーを共有",
+                "github": "GitHub リポジトリ",
+                "shortcuts": "ショートカットヘルプ",
+                "info": "情報"
+            },
+            "ariaLabel": {
+                "undo": "操作を元に戻す",
+                "redo": "操作をやり直す",
+                "share": "ステッカーを共有",
+                "github": "GitHub リポジトリへのリンク",
+                "shortcuts": "ショートカットヘルプを開く",
+                "info": "情報を開く"
+            }
+        },
+        "canvas": {
+            "ariaLabel": "{character} ステッカープレビュー",
+            "verticalSlider": {
+                "ariaLabel": "テキストの垂直位置を調整"
+            },
+            "horizontalSlider": {
+                "ariaLabel": "テキストの水平位置を調整"
+            },
+            "textField": {
+                "defaultLabel": "テキスト内容",
+                "leftLabel": "左",
+                "rightLabel": "右"
+            },
+            "background": {
+                "label": "背景色",
+                "switchAriaLabel": "背景色のオン/オフ",
+                "colorPickerAriaLabel": "背景色ピッカー",
+                "colorPickerTitle": "背景色を選択",
+                "resetTooltip": "背景色をリセット",
+                "resetAriaLabel": "背景色をリセット"
+            }
+        },
+        "settings": {
+            "rotate": {
+                "label": "回転角度",
+                "sliderAriaLabel": "回転角度を調整",
+                "resetTooltip": "回転角度をリセット",
+                "resetAriaLabel": "回転角度をリセット"
+            },
+            "fontSize": {
+                "label": "フォントサイズ",
+                "sliderAriaLabel": "フォントサイズを調整",
+                "resetTooltip": "フォントサイズをリセット",
+                "resetAriaLabel": "フォントサイズをリセット"
+            },
+            "lineSpacing": {
+                "label": "行間隔",
+                "sliderAriaLabel": "行間隔を調整",
+                "resetTooltip": "行間隔をリセット",
+                "resetAriaLabel": "行間隔をリセット"
+            },
+            "curve": {
+                "label": "曲線テキスト",
+                "switchAriaLabel": "曲線テキストのオン/オフ",
+                "convex": {
+                    "label": "上に凸",
+                    "switchAriaLabel": "凹凸方向の切り替え"
+                },
+                "radius": {
+                    "label": "半径",
+                    "sliderAriaLabel": "曲線の半径を調整",
+                    "resetTooltip": "曲線の半径をリセット",
+                    "resetAriaLabel": "曲線の半径をリセット"
+                }
+            },
+            "textColor": {
+                "label": "テキスト色",
+                "pickerAriaLabel": "テキスト色ピッカー",
+                "pickerTitle": "テキスト色を選択",
+                "resetTooltip": "テキスト色をリセット",
+                "resetAriaLabel": "テキスト色をリセット"
+            },
+            "strokeColor": {
+                "label": "縁取り色",
+                "pickerAriaLabel": "縁取り色ピッカー",
+                "pickerTitle": "縁取り色を選択",
+                "resetTooltip": "縁取り色をリセット",
+                "resetAriaLabel": "縁取り色をリセット"
+            },
+            "extraColor": {
+                "label": "色分け描画",
+                "switchAriaLabel": "色分け描画のオン/オフ",
+                "autoSplit": {
+                    "label": "自動分割",
+                    "switchAriaLabel": "自動分割のオン/オフ"
+                },
+                "color": {
+                    "label": "追加色",
+                    "pickerAriaLabel": "追加テキスト色ピッカー",
+                    "pickerTitle": "追加テキスト色を選択",
+                    "resetTooltip": "追加色をリセット",
+                    "resetAriaLabel": "追加色をリセット"
+                },
+                "stroke": {
+                    "label": "追加縁取り",
+                    "pickerAriaLabel": "追加縁取り色ピッカー",
+                    "pickerTitle": "追加縁取り色を選択",
+                    "resetTooltip": "追加縁取り色をリセット",
+                    "resetAriaLabel": "追加縁取り色をリセット"
+                }
+            }
+        },
+        "buttons": {
+            "copy": "コピー",
+            "download": "ダウンロード",
+            "copyAriaLabel": "ステッカーをクリップボードにコピー",
+            "downloadAriaLabel": "ステッカーをダウンロード"
+        },
+        "share": {
+            "title": "Arcaea ステッカー",
+            "text": "Arcaea ステッカージェネレーターで作った {character} のステッカーです！",
+            "unsupported": "お使いのブラウザは画像ファイルの直接共有に対応していません。ダウンロードまたはコピー機能をご利用ください。"
+        }
+    },
+    "picker": {
+        "openButton": {
+            "ariaLabel": "キャラクター選択を開く",
+            "title": "キャラクターを選択"
+        },
+        "search": {
+            "label": "キャラクターを検索",
+            "ariaLabel": "キャラクターを検索"
+        },
+        "noResults": "該当するキャラクターが見つかりません",
+        "characterItem": {
+            "ariaLabel": "キャラクター {name} {character} を選択",
+            "imgAlt": "{name} {character}"
+        }
+    },
+    "info": {
+        "dialog": {
+            "title": "情報 ・ 謝辞"
+        },
+        "sections": {
+            "project": "本プロジェクト",
+            "basedOn": "本プロジェクトは以下のプロジェクトを基に改変しました",
+            "thanks": "謝辞"
+        },
+        "items": {
+            "projectRepo": {
+                "primary": "arcaea-stickers",
+                "secondary": "Micxelo/arcaea-stickers",
+                "ariaLabel": "本プロジェクトのGitHubページを開く",
+                "avatarAlt": "GitHub リポジトリアイコン"
+            },
+            "developer": {
+                "primary": "Micxelo",
+                "secondary": "プロジェクト開発者",
+                "ariaLabel": "プロジェクト開発者のGitHubページを開く",
+                "avatarAlt": "Micxelo の GitHub アバター"
+            },
+            "originalRepo": {
+                "primary": "sekai-stickers",
+                "secondary": "TheOriginalAyaka/sekai-stickers",
+                "ariaLabel": "元プロジェクトのGitHubページを開く",
+                "avatarAlt": "GitHub リポジトリアイコン"
+            },
+            "ayaka": {
+                "primary": "Ayaka",
+                "secondary": "元プロジェクトの作者。アイデアと元となるコードを提供",
+                "ariaLabel": "Ayaka の GitHub ページを開く",
+                "avatarAlt": "Ayaka の GitHub アバター"
+            },
+            "modder4869": {
+                "primary": "Modder4869",
+                "secondary": "元プロジェクトのコードに協力",
+                "ariaLabel": "Modder4869 の GitHub ページを開く",
+                "avatarAlt": "Modder4869 の GitHub アバター"
+            },
+            "allContributors": {
+                "primary": "すべての貢献者",
+                "secondary": "元プロジェクトのその他のコード貢献者",
+                "ariaLabel": "元プロジェクトの貢献者一覧ページを開く",
+                "avatarAlt": "元プロジェクトの貢献者一覧アイコン"
+            }
+        },
+        "copyright": "ステッカー画像の素材の著作権は原ゲームの権利者に帰属します。<br />本プロジェクトはファンメイドであり、商業目的ではありません。<br />新しいステッカーの提供にご協力いただける方は、GitHub で Issue または PR を送信してください。",
+        "closeButton": {
+            "text": "閉じる",
+            "ariaLabel": "情報と謝辞のダイアログを閉じる"
+        }
+    },
+    "shortcutsHelp": {
+        "dialog": {
+            "title": "キーボードショートカット"
+        },
+        "closeButton": {
+            "text": "閉じる",
+            "ariaLabel": "ショートカットヘルプを閉じる"
+        },
+        "shortcuts": {
+            "copy": "ステッカーをコピー",
+            "download": "ステッカーをダウンロード",
+            "undo": "元に戻す",
+            "redo": "やり直し",
+            "reset": "現在のキャラクターのデフォルトにリセット",
+            "move1px": "文字位置を微調整 (1px)",
+            "move5px": "文字位置を移動 (5px)",
+            "fontSize": "フォントサイズを調整",
+            "rotate": "文字を回転"
+        }
+    }
+}

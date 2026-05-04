@@ -2,6 +2,7 @@
 
 import "./index.css";
 import App from "./App";
+import "./i18n";
 
 import React, {useMemo} from "react";
 import ReactDOM from "react-dom/client";

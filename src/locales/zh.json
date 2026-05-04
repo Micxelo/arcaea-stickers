@@ -1,0 +1,214 @@
+{
+    "app": {
+        "title": "Arcaea 贴纸生成器",
+        "header": {
+            "tooltip": {
+                "undo": "撤销",
+                "redo": "恢复",
+                "share": "分享贴纸",
+                "github": "GitHub 仓库",
+                "shortcuts": "快捷键帮助",
+                "info": "关于"
+            },
+            "ariaLabel": {
+                "undo": "撤销操作",
+                "redo": "恢复操作",
+                "share": "分享贴纸",
+                "github": "GitHub 仓库链接",
+                "shortcuts": "打开快捷键帮助",
+                "info": "关于信息"
+            }
+        },
+        "canvas": {
+            "ariaLabel": "{character} 贴纸预览",
+            "verticalSlider": {
+                "ariaLabel": "调整文字垂直位置"
+            },
+            "horizontalSlider": {
+                "ariaLabel": "调整文字水平位置"
+            },
+            "textField": {
+                "defaultLabel": "文字内容",
+                "leftLabel": "左侧文字",
+                "rightLabel": "右侧文字"
+            },
+            "background": {
+                "label": "背景颜色",
+                "switchAriaLabel": "背景颜色开关",
+                "colorPickerAriaLabel": "背景颜色选择器",
+                "colorPickerTitle": "选择背景颜色",
+                "resetTooltip": "重置背景颜色",
+                "resetAriaLabel": "重置背景颜色"
+            }
+        },
+        "settings": {
+            "rotate": {
+                "label": "旋转角度",
+                "sliderAriaLabel": "调整旋转角度",
+                "resetTooltip": "重置旋转角度",
+                "resetAriaLabel": "重置旋转角度"
+            },
+            "fontSize": {
+                "label": "字体大小",
+                "sliderAriaLabel": "调整字体大小",
+                "resetTooltip": "重置字体大小",
+                "resetAriaLabel": "重置字体大小"
+            },
+            "lineSpacing": {
+                "label": "行间距",
+                "sliderAriaLabel": "调整行间距",
+                "resetTooltip": "重置行间距",
+                "resetAriaLabel": "重置行间距"
+            },
+            "curve": {
+                "label": "弧形文字",
+                "switchAriaLabel": "弧形文字开关",
+                "convex": {
+                    "label": "上凸",
+                    "switchAriaLabel": "凹凸方向开关"
+                },
+                "radius": {
+                    "label": "半径",
+                    "sliderAriaLabel": "调整弧形半径",
+                    "resetTooltip": "重置弧形半径",
+                    "resetAriaLabel": "重置弧半径"
+                }
+            },
+            "textColor": {
+                "label": "文字颜色",
+                "pickerAriaLabel": "文字颜色选择器",
+                "pickerTitle": "选择文字颜色",
+                "resetTooltip": "重置文字颜色",
+                "resetAriaLabel": "重置文字颜色"
+            },
+            "strokeColor": {
+                "label": "描边颜色",
+                "pickerAriaLabel": "描边颜色选择器",
+                "pickerTitle": "选择描边颜色",
+                "resetTooltip": "重置描边颜色",
+                "resetAriaLabel": "重置描边颜色"
+            },
+            "extraColor": {
+                "label": "分色绘制",
+                "switchAriaLabel": "分色绘制开关",
+                "autoSplit": {
+                    "label": "自动分割",
+                    "switchAriaLabel": "自动分割开关"
+                },
+                "color": {
+                    "label": "附加颜色",
+                    "pickerAriaLabel": "附加颜色选择器",
+                    "pickerTitle": "选择附加文字颜色",
+                    "resetTooltip": "重置附加颜色",
+                    "resetAriaLabel": "重置附加颜色"
+                },
+                "stroke": {
+                    "label": "附加描边",
+                    "pickerAriaLabel": "附加描边颜色选择器",
+                    "pickerTitle": "选择附加描边颜色",
+                    "resetTooltip": "重置附加描边颜色",
+                    "resetAriaLabel": "重置附加描边颜色"
+                }
+            }
+        },
+        "buttons": {
+            "copy": "复制",
+            "download": "下载",
+            "copyAriaLabel": "复制贴纸到剪贴板",
+            "downloadAriaLabel": "下载贴纸"
+        },
+        "share": {
+            "title": "Arcaea 贴纸",
+            "text": "这是我用 Arcaea 贴纸生成器 制作的 {character} 贴纸！",
+            "unsupported": "您的浏览器不支持直接分享图片文件，请使用下载或复制功能。"
+        }
+    },
+    "picker": {
+        "openButton": {
+            "ariaLabel": "打开角色选择器",
+            "title": "选择角色"
+        },
+        "search": {
+            "label": "搜索角色",
+            "ariaLabel": "搜索角色"
+        },
+        "noResults": "未找到相关角色",
+        "characterItem": {
+            "ariaLabel": "选择角色 {name} {character}",
+            "imgAlt": "{name} {character}"
+        }
+    },
+    "info": {
+        "dialog": {
+            "title": "关于 & 致谢"
+        },
+        "sections": {
+            "project": "本项目",
+            "basedOn": "本项目基于以下项目修改而来",
+            "thanks": "致谢"
+        },
+        "items": {
+            "projectRepo": {
+                "primary": "arcaea-stickers",
+                "secondary": "Micxelo/arcaea-stickers",
+                "ariaLabel": "打开本项目的 GitHub 页面",
+                "avatarAlt": "GitHub 仓库图标"
+            },
+            "developer": {
+                "primary": "Micxelo",
+                "secondary": "项目开发者",
+                "ariaLabel": "打开项目开发者的 GitHub 页面",
+                "avatarAlt": "Micxelo 的 GitHub 头像"
+            },
+            "originalRepo": {
+                "primary": "sekai-stickers",
+                "secondary": "TheOriginalAyaka/sekai-stickers",
+                "ariaLabel": "打开原项目的 GitHub 页面",
+                "avatarAlt": "GitHub 仓库图标"
+            },
+            "ayaka": {
+                "primary": "Ayaka",
+                "secondary": "原项目的作者，提供了原始的想法和代码",
+                "ariaLabel": "打开 Ayaka 的 GitHub 页面",
+                "avatarAlt": "Ayaka 的 GitHub 头像"
+            },
+            "modder4869": {
+                "primary": "Modder4869",
+                "secondary": "为原项目代码提供帮助",
+                "ariaLabel": "打开 Modder4869 的 GitHub 页面",
+                "avatarAlt": "Modder4869 的 GitHub 头像"
+            },
+            "allContributors": {
+                "primary": "所有贡献者",
+                "secondary": "原项目的其他代码贡献者",
+                "ariaLabel": "打开原项目的贡献者列表页面",
+                "avatarAlt": "原项目的贡献者列表图标"
+            }
+        },
+        "copyright": "贴纸图像素材版权归原始游戏权利人所有。<br />本项目仅为粉丝创作，不用于商业用途。<br />如需贡献新贴纸，欢迎通过 GitHub 提交 Issue 或 PR。",
+        "closeButton": {
+            "text": "关闭",
+            "ariaLabel": "关闭关于与致谢对话框"
+        }
+    },
+    "shortcutsHelp": {
+        "dialog": {
+            "title": "键盘快捷键"
+        },
+        "closeButton": {
+            "text": "关闭",
+            "ariaLabel": "关闭快捷键帮助"
+        },
+        "shortcuts": {
+            "copy": "复制贴纸",
+            "download": "下载贴纸",
+            "undo": "撤销",
+            "redo": "恢复",
+            "reset": "重置为当前角色默认值",
+            "move1px": "微调文字位置 (1px)",
+            "move5px": "移动文字位置 (5px)",
+            "fontSize": "调整字号",
+            "rotate": "旋转文字"
+        }
+    }
+}
