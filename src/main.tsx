@@ -38,3 +38,15 @@ const rootElement = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
 
 root.render(<Root />);
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('ServiceWorker 注册成功, scope: ', registration.scope);
+      })
+      .catch((err) => {
+        console.log('ServiceWorker 注册失败: ', err);
+      });
+  });
+}
