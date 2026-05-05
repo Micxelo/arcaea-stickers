@@ -655,6 +655,16 @@ function App() {
         "image/png": b64toBlob(canvas.toDataURL().split(",")[1]),
       }),
     ]);
+
+    try {
+      const response = await fetch("https://api.wsctrl.qzz.io/counter/arcst/downloads", {
+        method: "POST",
+      });
+      const data = await response.json();
+      console.log(`Counter incremented: namespace=${data.namespace}, id=${data.id}, new value=${data.value}`);
+    } catch (error) {
+      console.error("Counter increment failed:", error);
+    }
   };
 
   const handleDownload = async () => {
@@ -663,6 +673,16 @@ function App() {
     link.download = `${typedCharacters[character].name}_${text.substring(0, 10)}_arcst.micxelo.moe.png`;
     link.href = canvas.toDataURL();
     link.click();
+
+    try {
+      const response = await fetch("https://api.wsctrl.qzz.io/counter/arcst/downloads", {
+        method: "POST",
+      });
+      const data = await response.json();
+      console.log(`Counter incremented: namespace=${data.namespace}, id=${data.id}, new value=${data.value}`);
+    } catch (error) {
+      console.error("Counter increment failed:", error);
+    }
   };
 
   // 全局快捷键监听

@@ -188,6 +188,7 @@
             }
         },
         "copyright": "Sticker image assets are copyrighted by the original game rights holders.<br />This project is a fan creation and not for commercial use.<br />To contribute new stickers, please submit an Issue or PR via GitHub.",
+        "counter": "Number of stickers generated with this tool: {count}",
         "closeButton": {
             "text": "Close",
             "ariaLabel": "Close About & Credits dialog"

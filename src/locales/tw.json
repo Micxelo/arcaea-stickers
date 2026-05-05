@@ -188,6 +188,7 @@
             }
         },
         "copyright": "貼紙圖像素材版權歸原始遊戲權利人所有。<br />本專案僅為粉絲創作，不供商業用途。<br />如需貢獻新貼紙，歡迎透過 GitHub 提交 Issue 或 PR。",
+        "counter": "使用本工具生成的貼紙數量: {count}",
         "closeButton": {
             "text": "關閉",
             "ariaLabel": "關閉關於與致謝對話框"

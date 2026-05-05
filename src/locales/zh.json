@@ -188,6 +188,7 @@
             }
         },
         "copyright": "贴纸图像素材版权归原始游戏权利人所有。<br />本项目仅为粉丝创作，不用于商业用途。<br />如需贡献新贴纸，欢迎通过 GitHub 提交 Issue 或 PR。",
+        "counter": "使用本工具生成的贴纸数量: {count}",
         "closeButton": {
             "text": "关闭",
             "ariaLabel": "关闭关于与致谢对话框"

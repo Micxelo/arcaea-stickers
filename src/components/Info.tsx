@@ -1,6 +1,7 @@
 // Info.tsx
 // 显示关于与致谢信息的对话框组件
 
+import { useEffect, useState } from 'react';
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -15,6 +16,8 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { Trans, useTranslation } from 'react-i18next';
 
+import { interpolate } from '../i18n';
+
 // 定义 Props 类型
 interface InfoProps {
   open: boolean;
@@ -23,6 +26,17 @@ interface InfoProps {
 
 export default function Info({ open, handleClose}: InfoProps) {
   const { t } = useTranslation();
+
+  const [counterValue, setCounterValue] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      fetch("https://api.wsctrl.qzz.io/counter/arcst/downloads")
+        .then(res => res.ok ? res.json() : null)
+        .then(data => setCounterValue(data?.value ?? null))
+        .catch(() => setCounterValue(null));
+    }
+  }, [open]);
 
   return (
     <div>
@@ -154,6 +168,12 @@ export default function Info({ open, handleClose}: InfoProps) {
 
             <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
               <Trans i18nKey="info.copyright" components={{ br: <br /> }} />
+            </Typography>
+
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              {interpolate(t('info.counter'), { 
+                count: counterValue !== null ? counterValue : 'N/A' 
+              })}
             </Typography>
           </DialogContentText>
         </DialogContent>
