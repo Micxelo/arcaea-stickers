@@ -8,6 +8,7 @@
                 "share": "ステッカーを共有",
                 "github": "GitHub リポジトリ",
                 "shortcuts": "ショートカットヘルプ",
+                "language": "言語を選択",
                 "info": "情報"
             },
             "ariaLabel": {
@@ -16,6 +17,7 @@
                 "share": "ステッカーを共有",
                 "github": "GitHub リポジトリへのリンク",
                 "shortcuts": "ショートカットヘルプを開く",
+                "language": "言語選択メニューを開く",
                 "info": "情報を開く"
             }
         },

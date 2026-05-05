@@ -18,6 +18,8 @@ import Button from "@mui/material/Button";
 import Switch from "@mui/material/Switch";
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
@@ -26,6 +28,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import InfoIcon from '@mui/icons-material/Info';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import LanguageIcon from '@mui/icons-material/Language';
 
 interface Character {
   id: string;
@@ -169,10 +172,13 @@ function App() {
   });
   const isUndoRedoRef = useRef(false); // 标记当前的状态变化是否由“撤销/恢复”按钮引起的
 
+  // 语言选择菜单状态
+  const [langAnchorEl, setLangAnchorEl] = useState<null | HTMLElement>(null);
+
   const img = new Image();
 
   // i18n
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // 组件挂载时加载字体
   useEffect(() => {
@@ -385,6 +391,19 @@ function App() {
         alert(t('app.share.unsupported'));
       }
     }, "image/png");
+  };
+
+  const handleLangMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setLangAnchorEl(event.currentTarget);
+  };
+
+  const handleLangMenuClose = () => {
+    setLangAnchorEl(null);
+  };
+
+  const handleLanguageChange = (lng: string) => {
+    i18n.changeLanguage(lng);
+    handleLangMenuClose();
   };
 
   img.src = "/img/" + typedCharacters[character].img;
@@ -629,7 +648,7 @@ function App() {
     return new Blob(byteArrays, { type: contentType });
   }
 
-  const copy = async () => {
+  const handleCopy = async () => {
     const canvas = document.getElementsByTagName("canvas")[0];
     await navigator.clipboard.write([
       new ClipboardItem({
@@ -638,7 +657,7 @@ function App() {
     ]);
   };
 
-  const download = async () => {
+  const handleDownload = async () => {
     const canvas = document.getElementsByTagName("canvas")[0];
     const link = document.createElement("a");
     link.download = `${typedCharacters[character].name}_${text.substring(0, 10)}_arcst.micxelo.moe.png`;
@@ -677,13 +696,13 @@ function App() {
       // 复制 (Ctrl/Cmd + C)
       if (isCmdOrCtrl && e.key.toLowerCase() === 'c') {
         e.preventDefault();
-        copy();
+        handleCopy();
       }
 
       // 下载 (Ctrl/Cmd + S)
       if (isCmdOrCtrl && e.key.toLowerCase() === 's') {
         e.preventDefault();
-        download();
+        handleDownload();
       }
 
       // 撤销 (Ctrl/Cmd + Z)
@@ -745,7 +764,7 @@ function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
 
-  }, [character, text, text2, copy, download, handleUndo, handleRedo]);
+  }, [character, text, text2, handleCopy, handleDownload, handleUndo, handleRedo]);
 
   return (
     <div className="App">
@@ -821,6 +840,27 @@ function App() {
                 <KeyboardIcon />
               </IconButton>
             </Tooltip>
+
+            {/* 语言选择 */}
+            <Tooltip title={t('app.header.tooltip.language')}>
+              <IconButton
+                color="secondary"
+                onClick={handleLangMenuOpen}
+                aria-label={t('app.header.ariaLabel.language')}
+              >
+                <LanguageIcon />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              anchorEl={langAnchorEl}
+              open={Boolean(langAnchorEl)}
+              onClose={handleLangMenuClose}
+            >
+              <MenuItem onClick={() => handleLanguageChange('en')}>English</MenuItem>
+              <MenuItem onClick={() => handleLanguageChange('zh')}>简体中文</MenuItem>
+              <MenuItem onClick={() => handleLanguageChange('zh-TW')}>繁體中文</MenuItem>
+              <MenuItem onClick={() => handleLanguageChange('ja')}>日本語</MenuItem>
+            </Menu>
 
             {/* 关于 */}
             <Tooltip title={t('app.header.tooltip.info')}>
@@ -1217,10 +1257,10 @@ function App() {
             </div>
 
             <div className="buttons">
-              <Button color="secondary" variant="contained" onClick={copy} aria-label={t('app.buttons.copyAriaLabel')}>
+              <Button color="secondary" variant="contained" onClick={handleCopy} aria-label={t('app.buttons.copyAriaLabel')}>
                 {t('app.buttons.copy')}
               </Button>
-              <Button color="secondary" variant="contained" onClick={download} aria-label={t('app.buttons.downloadAriaLabel')}>
+              <Button color="secondary" variant="contained" onClick={handleDownload} aria-label={t('app.buttons.downloadAriaLabel')}>
                 {t('app.buttons.download')}
               </Button>
             </div>

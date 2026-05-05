@@ -29,9 +29,9 @@ i18n
       escapeValue: false,
     },
     detection: {
-      order: ['querystring', 'navigator', 'htmlTag'],
+      order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
       lookupQuerystring: 'lang',
-      caches: [],
+      caches: ['localStorage', 'cookie'],
     },
   });
 

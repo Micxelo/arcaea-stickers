@@ -8,6 +8,7 @@
                 "share": "分享贴纸",
                 "github": "GitHub 仓库",
                 "shortcuts": "快捷键帮助",
+                "language": "选择语言",
                 "info": "关于"
             },
             "ariaLabel": {
@@ -16,6 +17,7 @@
                 "share": "分享贴纸",
                 "github": "GitHub 仓库链接",
                 "shortcuts": "打开快捷键帮助",
+                "language": "打开语言选择菜单",
                 "info": "关于信息"
             }
         },

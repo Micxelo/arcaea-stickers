@@ -8,6 +8,7 @@
                 "share": "Share Sticker",
                 "github": "GitHub Repository",
                 "shortcuts": "Keyboard Shortcuts Help",
+                "language": "Select Language",
                 "info": "About"
             },
             "ariaLabel": {
@@ -16,6 +17,7 @@
                 "share": "Share sticker",
                 "github": "GitHub repository link",
                 "shortcuts": "Open keyboard shortcuts help",
+                "language": "Open language selection menu",
                 "info": "About"
             }
         },
@@ -43,7 +45,7 @@
         },
         "settings": {
             "rotate": {
-                "label": "Rotation angle",
+                "label": "Rotation",
                 "sliderAriaLabel": "Adjust rotation angle",
                 "resetTooltip": "Reset rotation angle",
                 "resetAriaLabel": "Reset rotation angle"
@@ -61,7 +63,7 @@
                 "resetAriaLabel": "Reset line spacing"
             },
             "curve": {
-                "label": "Curved text",
+                "label": "Curved",
                 "switchAriaLabel": "Curved text toggle",
                 "convex": {
                     "label": "Convex upward",
