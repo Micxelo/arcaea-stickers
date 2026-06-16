@@ -41,7 +41,7 @@ npm run build # 构建生产版本
 ## ❤️ 致谢
 
 - 原始贴纸素材来自 [かなめなか](https://www.pixiv.net/users/28246124) 和 Xestarrrr 。
-- [TheOriginalAyaka/sekai-stickers](https://github.com/TheOriginalAyaka/sekai-stickers) 的原始实现
+- [TheOriginalAyaka/sekai-stickers](https://github.com/TheOriginalAyaka/sekai-stickers) 的原始实现。
 
 感谢所有原项目的贡献者，以及社区中所有支持和反馈的玩家！
 
